@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_taha_epi_sync_queue_tree" model="ir.ui.view">
+    <field name="name">taha.epi.sync.queue.tree</field>
+    <field name="model">taha.epi.sync.queue</field>
+    <field name="arch" type="xml">
+      <tree>
+        <field name="create_date"/>
+        <field name="event_id"/>
+        <field name="status"/>
+        <field name="attempts"/>
+        <field name="last_error"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="action_taha_epi_sync_queue" model="ir.actions.act_window">
+    <field name="name">Sync Queue</field>
+    <field name="res_model">taha.epi.sync.queue</field>
+    <field name="view_mode">tree,form</field>
+  </record>
+
+  <menuitem id="menu_taha_epi_sync_queue" name="Sync Queue" parent="menu_taha_epi_root" action="action_taha_epi_sync_queue"/>
+</odoo>

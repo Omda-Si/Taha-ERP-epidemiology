@@ -1,0 +1,7 @@
+from . import department
+from . import doctor
+from . import patient
+from . import appointment
+from . import prescription
+from . import dashboard
+from . import res_config_settings

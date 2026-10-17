@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_taha_clinic_prescription_tree" model="ir.ui.view">
+        <field name="name">taha.clinic.prescription.tree</field>
+        <field name="model">taha.clinic.prescription</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="date"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="amount_total"/>
+                <field name="state" widget="badge"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_taha_clinic_prescription_form" model="ir.ui.view">
+        <field name="name">taha.clinic.prescription.form</field>
+        <field name="model">taha.clinic.prescription</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_create_invoice" type="object" string="Invoice medicines" class="oe_highlight" invisible="state != 'confirmed'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,invoiced"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="patient_id"/>
+                            <field name="doctor_id"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="appointment_id"/>
+                            <field name="invoice_id" readonly="1"/>
+                            <field name="amount_total"/>
+                        </group>
+                    </group>
+                    <field name="line_ids">
+                        <tree editable="bottom">
+                            <field name="product_id"/>
+                            <field name="name"/>
+                            <field name="dose"/>
+                            <field name="duration"/>
+                            <field name="quantity"/>
+                            <field name="price_unit"/>
+                            <field name="subtotal"/>
+                        </tree>
+                    </field>
+                    <field name="notes"/>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_taha_clinic_prescription" model="ir.actions.act_window">
+        <field name="name">Prescriptions</field>
+        <field name="res_model">taha.clinic.prescription</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_taha_clinic_pharmacy_products" model="ir.actions.act_window">
+        <field name="name">Pharmacy products</field>
+        <field name="res_model">product.product</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'default_type': 'consu', 'default_sale_ok': 1}</field>
+    </record>
+
+    <record id="action_taha_clinic_invoices" model="ir.actions.act_window">
+        <field name="name">Patient invoices</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('move_type', '=', 'out_invoice')]</field>
+        <field name="context">{'default_move_type': 'out_invoice'}</field>
+    </record>
+</odoo>

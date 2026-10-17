@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Taha Group | Epidemiological Command Center</title>
+  <link rel="stylesheet" href="/static/dashboard.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="shell">
+    <aside>
+      <div class="brand">
+        <span class="mark">TG</span>
+        <div>
+          <strong>Taha Group</strong>
+          <small>Public Health Intelligence</small>
+        </div>
+      </div>
+      <nav>
+        <a class="active" href="/">Command Center</a>
+        <a href="/docs">Ingestion API</a>
+        <a href="/health">Service Health</a>
+      </nav>
+      <p class="aside-note">Anonymized clinic diagnoses only. Names, IDs, contacts, and exact addresses are blocked at ingest.</p>
+    </aside>
+    <main>
+      <header>
+        <div>
+          <p class="eyebrow">TEEDSS · Central Analytics</p>
+          <h1>Epidemiological Command Center</h1>
+        </div>
+        <label>
+          Window
+          <select id="window">
+            <option value="7">Last 7 days</option>
+            <option value="14">Last 14 days</option>
+            <option value="30" selected>Last 30 days</option>
+            <option value="90">Last 90 days</option>
+          </select>
+        </label>
+      </header>
+      <section class="kpis" id="kpis"></section>
+      <section class="alerts" id="alerts"></section>
+      <section class="grid">
+        <article class="card wide">
+          <h2>Cases over time</h2>
+          <canvas id="trendChart"></canvas>
+        </article>
+        <article class="card">
+          <h2>Disease prevalence</h2>
+          <canvas id="diseaseChart"></canvas>
+        </article>
+        <article class="card">
+          <h2>Regional burden</h2>
+          <canvas id="regionChart"></canvas>
+        </article>
+        <article class="card">
+          <h2>Age brackets</h2>
+          <canvas id="ageChart"></canvas>
+        </article>
+        <article class="card">
+          <h2>Occupational cohorts</h2>
+          <canvas id="occupationChart"></canvas>
+        </article>
+      </section>
+      <section class="card">
+        <h2>Latest anonymized events</h2>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Diagnosed</th>
+                <th>Facility</th>
+                <th>Disease</th>
+                <th>Age</th>
+                <th>Occupation</th>
+                <th>Location</th>
+              </tr>
+            </thead>
+            <tbody id="events"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="/static/dashboard.js"></script>
+</body>
+</html>

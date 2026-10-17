@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_taha_clinic_root" name="Taha Clinic" sequence="35"
+              web_icon="taha_clinic,static/description/icon.png"
+              action="action_taha_clinic_reception"/>
+
+    <menuitem id="menu_taha_clinic_dashboard" name="Dashboard" parent="menu_taha_clinic_root"
+              action="action_taha_clinic_dashboard" sequence="1"/>
+    <menuitem id="menu_taha_clinic_reception" name="Reception" parent="menu_taha_clinic_root"
+              action="action_taha_clinic_reception" sequence="5"
+              groups="taha_clinic.group_receptionist"/>
+    <menuitem id="menu_taha_clinic_appointment" name="Appointments" parent="menu_taha_clinic_root"
+              action="action_taha_clinic_appointment" sequence="10"/>
+    <menuitem id="menu_taha_clinic_patient" name="Patients" parent="menu_taha_clinic_root"
+              action="taha_epidemiology_sync.action_taha_clinical_patient" sequence="15"/>
+    <menuitem id="menu_taha_clinic_prescription" name="Prescriptions" parent="menu_taha_clinic_root"
+              action="action_taha_clinic_prescription" sequence="20"
+              groups="taha_clinic.group_doctor"/>
+
+    <menuitem id="menu_taha_clinic_billing" name="Billing" parent="menu_taha_clinic_root" sequence="30"
+              groups="taha_clinic.group_billing"/>
+    <menuitem id="menu_taha_clinic_invoices" name="Invoices" parent="menu_taha_clinic_billing"
+              action="action_taha_clinic_invoices" sequence="10"/>
+    <menuitem id="menu_taha_clinic_pharmacy" name="Pharmacy products" parent="menu_taha_clinic_billing"
+              action="action_taha_clinic_pharmacy_products" sequence="20"/>
+
+    <menuitem id="menu_taha_clinic_config_root" name="Configuration" parent="menu_taha_clinic_root" sequence="90"
+              groups="taha_clinic.group_manager"/>
+    <menuitem id="menu_taha_clinic_doctor" name="Doctors" parent="menu_taha_clinic_config_root"
+              action="action_taha_clinic_doctor" sequence="10"/>
+    <menuitem id="menu_taha_clinic_department" name="Departments" parent="menu_taha_clinic_config_root"
+              action="action_taha_clinic_department" sequence="20"/>
+    <menuitem id="menu_taha_clinic_settings" name="Settings" parent="menu_taha_clinic_config_root"
+              action="action_taha_clinic_config" sequence="90"/>
+</odoo>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_taha_clinical_diagnosis_tree" model="ir.ui.view">
+    <field name="name">taha.clinical.diagnosis.tree</field>
+    <field name="model">taha.clinical.diagnosis</field>
+    <field name="arch" type="xml">
+      <tree>
+        <field name="diagnosed_at"/>
+        <field name="patient_name"/>
+        <field name="diagnosis_name"/>
+        <field name="diagnosis_code"/>
+        <field name="occupation"/>
+        <field name="city"/>
+      </tree>
+    </field>
+  </record>
+
+  <record id="view_taha_clinical_diagnosis_form" model="ir.ui.view">
+    <field name="name">taha.clinical.diagnosis.form</field>
+    <field name="model">taha.clinical.diagnosis</field>
+    <field name="arch" type="xml">
+      <form>
+        <sheet>
+          <group>
+            <group string="Patient (local only, never synced)">
+              <field name="patient_name"/>
+              <field name="phone"/>
+              <field name="national_id"/>
+              <field name="street_address"/>
+              <field name="date_of_birth"/>
+              <field name="gender"/>
+            </group>
+            <group string="Anonymized epidemiological fields">
+              <field name="occupation"/>
+              <field name="city"/>
+              <field name="district"/>
+              <field name="region"/>
+              <field name="diagnosis_code"/>
+              <field name="diagnosis_name"/>
+              <field name="diagnosed_at"/>
+              <field name="queue_id"/>
+            </group>
+          </group>
+          <field name="clinical_notes" placeholder="Clinical notes stay in this database."/>
+        </sheet>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_taha_clinical_diagnosis" model="ir.actions.act_window">
+    <field name="name">Diagnoses</field>
+    <field name="res_model">taha.clinical.diagnosis</field>
+    <field name="view_mode">tree,form</field>
+  </record>
+
+  <menuitem id="menu_taha_epi_root" name="Taha Epidemiology" sequence="40"/>
+  <menuitem id="menu_taha_clinical_diagnosis" name="Diagnoses" parent="menu_taha_epi_root" action="action_taha_clinical_diagnosis"/>
+</odoo>

@@ -1,0 +1,52 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: taha_epi
+      POSTGRES_USER: taha
+      POSTGRES_PASSWORD: taha_secret
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U taha -d taha_epi"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "5432:5432"
+
+  central:
+    build: ./central
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://taha:taha_secret@db:5432/taha_epi
+      TAHA_API_TOKEN: ${TAHA_API_TOKEN:-change-me-central-token}
+      TAHA_HMAC_SECRET: ${TAHA_HMAC_SECRET:-change-me-hmac-secret}
+      SEED_DEMO: ${CENTRAL_SEED_DEMO:-true}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  clinic:
+    build: ./clinic
+    ports:
+      - "8001:8001"
+    environment:
+      DATABASE_URL: sqlite:////data/clinic.db
+      CENTRAL_API_URL: http://central:8000
+      TAHA_API_TOKEN: ${TAHA_API_TOKEN:-change-me-central-token}
+      TAHA_HMAC_SECRET: ${TAHA_HMAC_SECRET:-change-me-hmac-secret}
+      FACILITY_CODE: ${FACILITY_CODE:-CLN-KRT-001}
+      FACILITY_NAME: ${FACILITY_NAME:-Khartoum Central Clinic}
+      FACILITY_CITY: ${FACILITY_CITY:-Khartoum}
+      FACILITY_DISTRICT: ${FACILITY_DISTRICT:-Khartoum}
+      FACILITY_REGION: ${FACILITY_REGION:-Khartoum}
+    volumes:
+      - clinicdata:/data
+    depends_on:
+      - central
+
+volumes:
+  pgdata:
+  clinicdata:

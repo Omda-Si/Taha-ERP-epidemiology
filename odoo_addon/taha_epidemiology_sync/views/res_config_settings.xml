@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="res_config_settings_view_form_taha_epi" model="ir.ui.view">
+    <field name="name">res.config.settings.view.form.inherit.taha.epi</field>
+    <field name="model">res.config.settings</field>
+    <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//form" position="inside">
+        <app data-string="Taha Epidemiology" string="Taha Epidemiology" name="taha_epidemiology_sync">
+          <block title="Taha Group central server">
+            <setting string="API URL">
+              <field name="taha_epi_api_url"/>
+            </setting>
+            <setting string="Bearer token">
+              <field name="taha_epi_api_token" password="True"/>
+            </setting>
+            <setting string="HMAC secret">
+              <field name="taha_epi_hmac_secret" password="True"/>
+            </setting>
+            <setting string="Facility code">
+              <field name="taha_epi_facility_code"/>
+            </setting>
+          </block>
+        </app>
+      </xpath>
+    </field>
+  </record>
+
+  <record id="action_taha_epi_config" model="ir.actions.act_window">
+    <field name="name">Taha Epidemiology Settings</field>
+    <field name="res_model">res.config.settings</field>
+    <field name="view_id" ref="res_config_settings_view_form_taha_epi"/>
+    <field name="view_mode">form</field>
+    <field name="target">inline</field>
+    <field name="context">{'module': 'taha_epidemiology_sync'}</field>
+  </record>
+
+  <menuitem id="menu_taha_epi_config" name="Settings" parent="menu_taha_epi_root" action="action_taha_epi_config" sequence="90"/>
+</odoo>

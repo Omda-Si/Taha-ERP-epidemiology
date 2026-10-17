@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_taha_clinic_appointment_tree" model="ir.ui.view">
+        <field name="name">taha.clinic.appointment.tree</field>
+        <field name="model">taha.clinic.appointment</field>
+        <field name="arch" type="xml">
+            <tree decoration-info="state == 'waiting'" decoration-success="state == 'done'" decoration-danger="state == 'cancelled'">
+                <field name="name"/>
+                <field name="scheduled_start"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="visit_type"/>
+                <field name="state" widget="badge"/>
+                <field name="payment_state" widget="badge"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_taha_clinic_appointment_kanban" model="ir.ui.view">
+        <field name="name">taha.clinic.appointment.kanban</field>
+        <field name="model">taha.clinic.appointment</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <field name="visit_type"/>
+                <field name="scheduled_start"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <strong><field name="patient_id"/></strong>
+                            <div><field name="name"/></div>
+                            <div><field name="doctor_id"/></div>
+                            <div><field name="scheduled_start"/></div>
+                            <div class="text-muted"><field name="visit_type"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_taha_clinic_appointment_calendar" model="ir.ui.view">
+        <field name="name">taha.clinic.appointment.calendar</field>
+        <field name="model">taha.clinic.appointment</field>
+        <field name="arch" type="xml">
+            <calendar date_start="scheduled_start" date_stop="scheduled_end" color="doctor_id" mode="week">
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="view_taha_clinic_appointment_form" model="ir.ui.view">
+        <field name="name">taha.clinic.appointment.form</field>
+        <field name="model">taha.clinic.appointment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_check_in" type="object" string="Check in" class="oe_highlight" invisible="state not in ('draft', 'confirmed')"/>
+                    <button name="action_start" type="object" string="Start consultation" class="oe_highlight" invisible="state != 'waiting'"/>
+                    <button name="action_done" type="object" string="Finish visit" class="oe_highlight" invisible="state != 'in_consult'"/>
+                    <button name="action_create_prescription" type="object" string="Prescription" invisible="state not in ('in_consult', 'done')"/>
+                    <button name="action_create_invoice" type="object" string="Create invoice" invisible="state not in ('done', 'in_consult') or invoice_id"/>
+                    <button name="action_open_invoice" type="object" string="Open invoice" invisible="not invoice_id"/>
+                    <button name="action_register_payment" type="object" string="Register payment" class="oe_highlight" invisible="not invoice_id"/>
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state in ('done', 'cancelled')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,waiting,in_consult,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Reception">
+                            <field name="patient_id"/>
+                            <field name="doctor_id"/>
+                            <field name="department_id"/>
+                            <field name="visit_type"/>
+                            <field name="scheduled_start"/>
+                            <field name="scheduled_end"/>
+                        </group>
+                        <group string="Clinical and billing">
+                            <field name="chief_complaint"/>
+                            <field name="diagnosis_code"/>
+                            <field name="diagnosis_name"/>
+                            <field name="diagnosis_id" readonly="1"/>
+                            <field name="consultation_fee"/>
+                            <field name="invoice_id" readonly="1"/>
+                            <field name="payment_state"/>
+                            <field name="prescription_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <field name="notes" placeholder="Clinical notes stay in the clinic. Finishing a visit with a diagnosis code sends only anonymized data to Taha Group."/>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_taha_clinic_appointment_search" model="ir.ui.view">
+        <field name="name">taha.clinic.appointment.search</field>
+        <field name="model">taha.clinic.appointment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="patient_id"/>
+                <field name="doctor_id"/>
+                <filter string="Today" name="today" domain="[('scheduled_start', '&gt;=', datetime.datetime.combine(context_today(), datetime.time(0, 0, 0)))]"/>
+                <filter string="Waiting room" name="waiting" domain="[('state', '=', 'waiting')]"/>
+                <separator/>
+                <filter string="Doctor" name="group_doctor" context="{'group_by': 'doctor_id'}"/>
+                <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_taha_clinic_appointment" model="ir.actions.act_window">
+        <field name="name">Appointments</field>
+        <field name="res_model">taha.clinic.appointment</field>
+        <field name="view_mode">kanban,tree,form,calendar</field>
+        <field name="context">{'search_default_today': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Book a visit</p>
+            <p>Reception can register walk-ins or scheduled appointments, then check the patient in.</p>
+        </field>
+    </record>
+
+    <record id="action_taha_clinic_reception" model="ir.actions.act_window">
+        <field name="name">Reception</field>
+        <field name="res_model">taha.clinic.appointment</field>
+        <field name="view_mode">kanban,tree,form,calendar</field>
+        <field name="domain">[('state', 'not in', ['cancelled'])]</field>
+        <field name="context">{'search_default_today': 1, 'default_visit_type': 'walkin'}</field>
+    </record>
+</odoo>

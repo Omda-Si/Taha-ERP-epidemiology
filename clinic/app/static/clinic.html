@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clinic ERP · Epidemiological Sync</title>
+  <link rel="stylesheet" href="/static/clinic.css" />
+</head>
+<body>
+  <header>
+    <div>
+      <p class="eyebrow">Local clinic / hospital ERP</p>
+      <h1 id="facilityName">Clinic</h1>
+      <p class="sub" id="facilityMeta"></p>
+    </div>
+    <div class="status-pill" id="syncStatus">Queue idle</div>
+  </header>
+  <main>
+    <section class="panel">
+      <h2>1. Register patient <small>stays in this clinic</small></h2>
+      <form id="patientForm" class="grid">
+        <label>Full name<input name="full_name" required /></label>
+        <label>Phone<input name="phone" /></label>
+        <label>Email<input name="email" type="email" /></label>
+        <label>National ID<input name="national_id" /></label>
+        <label>Street address<input name="street_address" /></label>
+        <label>Date of birth<input name="date_of_birth" type="date" required /></label>
+        <label>Gender
+          <select name="gender">
+            <option value="female">Female</option>
+            <option value="male">Male</option>
+            <option value="other">Other</option>
+            <option value="unknown">Unknown</option>
+          </select>
+        </label>
+        <label>Occupation<select name="occupation" id="occupation"></select></label>
+        <label>City<select name="cityKey" id="cityKey"></select></label>
+        <button type="submit">Save patient locally</button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>2. Log diagnosis <small>triggers anonymized sync</small></h2>
+      <form id="diagnosisForm" class="grid">
+        <label>Patient<select name="patient_id" id="patientSelect" required></select></label>
+        <label>Disease<select name="disease" id="disease" required></select></label>
+        <label class="wide">Clinical notes (local only)<textarea name="clinical_notes" rows="3"></textarea></label>
+        <button type="submit">Save diagnosis and queue sync</button>
+      </form>
+      <pre id="lastPayload" class="payload hidden"></pre>
+    </section>
+
+    <section class="panel">
+      <div class="row">
+        <h2>3. Offline sync queue</h2>
+        <button id="flushBtn" type="button">Retry now</button>
+      </div>
+      <p class="help">If the Taha Group server is unreachable, anonymized records stay here and retry automatically.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Status</th>
+              <th>Disease</th>
+              <th>Age</th>
+              <th>Occupation</th>
+              <th>Location</th>
+              <th>Attempts</th>
+            </tr>
+          </thead>
+          <tbody id="queueBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <script src="/static/clinic.js"></script>
+</body>
+</html>
