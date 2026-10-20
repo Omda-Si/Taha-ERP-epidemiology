@@ -1,7 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_taha_clinical_patient_user,taha.clinical.patient.user,model_taha_clinical_patient,group_user,1,1,1,0
-access_taha_clinical_diagnosis_user,taha.clinical.diagnosis.user,model_taha_clinical_diagnosis,group_user,1,1,1,0
-access_taha_epi_sync_queue_user,taha.epi.sync.queue.user,model_taha_epi_sync_queue,group_user,1,0,0,0
-access_taha_clinical_patient_manager,taha.clinical.patient.manager,model_taha_clinical_patient,group_manager,1,1,1,1
-access_taha_clinical_diagnosis_manager,taha.clinical.diagnosis.manager,model_taha_clinical_diagnosis,group_manager,1,1,1,1
-access_taha_epi_sync_queue_manager,taha.epi.sync.queue.manager,model_taha_epi_sync_queue,group_manager,1,1,1,1

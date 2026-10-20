@@ -8,7 +8,7 @@
     <record id="group_receptionist" model="res.groups">
         <field name="name">Reception</field>
         <field name="category_id" ref="module_category_taha_clinic"/>
-        <field name="implied_ids" eval="[(4, ref('base.group_user')), (4, ref('taha_epidemiology_sync.group_user'))]"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
         <field name="comment">Register patients, book appointments, and check patients in.</field>
     </record>
 
@@ -29,7 +29,7 @@
     <record id="group_manager" model="res.groups">
         <field name="name">Manager</field>
         <field name="category_id" ref="module_category_taha_clinic"/>
-        <field name="implied_ids" eval="[(4, ref('group_doctor')), (4, ref('group_billing')), (4, ref('taha_epidemiology_sync.group_manager'))]"/>
+        <field name="implied_ids" eval="[(4, ref('group_doctor')), (4, ref('group_billing'))]"/>
         <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
     </record>
 </odoo>

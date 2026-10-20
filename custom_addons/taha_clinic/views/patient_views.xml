@@ -3,7 +3,7 @@
     <record id="view_taha_clinical_patient_form_clinic" model="ir.ui.view">
         <field name="name">taha.clinical.patient.form.clinic</field>
         <field name="model">taha.clinical.patient</field>
-        <field name="inherit_id" ref="taha_epidemiology_sync.view_taha_clinical_patient_form"/>
+        <field name="inherit_id" ref="view_taha_clinical_patient_form"/>
         <field name="arch" type="xml">
             <xpath expr="//div[@name='button_box']" position="inside">
                 <button name="action_open_appointments" type="object" class="oe_stat_button" icon="fa-calendar">
@@ -27,7 +27,7 @@
     <record id="view_taha_clinical_patient_tree_clinic" model="ir.ui.view">
         <field name="name">taha.clinical.patient.tree.clinic</field>
         <field name="model">taha.clinical.patient</field>
-        <field name="inherit_id" ref="taha_epidemiology_sync.view_taha_clinical_patient_tree"/>
+        <field name="inherit_id" ref="view_taha_clinical_patient_tree"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='name']" position="before">
                 <field name="file_number"/>

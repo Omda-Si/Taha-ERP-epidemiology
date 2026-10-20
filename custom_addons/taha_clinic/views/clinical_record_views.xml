@@ -168,11 +168,4 @@
         </field>
     </record>
 
-    <menuitem id="menu_taha_epi_root" name="Taha Epidemiology" sequence="40"
-              action="action_taha_clinical_patient"
-              web_icon="taha_epidemiology_sync,static/description/icon.png"/>
-    <menuitem id="menu_taha_clinical_patient" name="Patients" parent="menu_taha_epi_root"
-              action="action_taha_clinical_patient" sequence="10"/>
-    <menuitem id="menu_taha_clinical_diagnosis" name="Diagnoses" parent="menu_taha_epi_root"
-              action="action_taha_clinical_diagnosis" sequence="20"/>
 </odoo>
