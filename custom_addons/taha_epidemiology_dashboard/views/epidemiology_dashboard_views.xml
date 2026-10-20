@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_taha_epidemiology_report_tree" model="ir.ui.view">
+        <field name="name">taha.epidemiology.report.tree</field>
+        <field name="model">taha.epidemiology.report</field>
+        <field name="arch" type="xml">
+            <tree create="0" edit="0" delete="0">
+                <field name="diagnosed_at"/>
+                <field name="facility_code"/>
+                <field name="diagnosis_code"/>
+                <field name="diagnosis_name"/>
+                <field name="age_bracket"/>
+                <field name="occupation"/>
+                <field name="city"/>
+                <field name="region"/>
+                <field name="case_count" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_taha_epidemiology_report_form" model="ir.ui.view">
+        <field name="name">taha.epidemiology.report.form</field>
+        <field name="model">taha.epidemiology.report</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0">
+                <sheet>
+                    <group>
+                        <group string="Disease">
+                            <field name="diagnosis_code"/>
+                            <field name="diagnosis_name"/>
+                            <field name="diagnosed_at"/>
+                            <field name="facility_code"/>
+                        </group>
+                        <group string="Demographics (anonymized)">
+                            <field name="age_bracket"/>
+                            <field name="occupation"/>
+                            <field name="city"/>
+                            <field name="district"/>
+                            <field name="region"/>
+                            <field name="event_id"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_taha_epidemiology_report_graph" model="ir.ui.view">
+        <field name="name">taha.epidemiology.report.graph</field>
+        <field name="model">taha.epidemiology.report</field>
+        <field name="arch" type="xml">
+            <graph type="bar" stacked="0">
+                <field name="diagnosis_name"/>
+                <field name="case_count" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_taha_epidemiology_report_graph_region" model="ir.ui.view">
+        <field name="name">taha.epidemiology.report.graph.region</field>
+        <field name="model">taha.epidemiology.report</field>
+        <field name="arch" type="xml">
+            <graph string="Cases by region" type="pie">
+                <field name="region"/>
+                <field name="case_count" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_taha_epidemiology_report_pivot" model="ir.ui.view">
+        <field name="name">taha.epidemiology.report.pivot</field>
+        <field name="model">taha.epidemiology.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Outbreak matrix">
+                <field name="region" type="row"/>
+                <field name="diagnosis_name" type="row"/>
+                <field name="age_bracket" type="col"/>
+                <field name="case_count" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_taha_epidemiology_report_search" model="ir.ui.view">
+        <field name="name">taha.epidemiology.report.search</field>
+        <field name="model">taha.epidemiology.report</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="diagnosis_name"/>
+                <field name="diagnosis_code"/>
+                <field name="region"/>
+                <field name="occupation"/>
+                <field name="facility_code"/>
+                <filter string="Last 7 days" name="last_7"
+                        domain="[('diagnosed_at', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Last 30 days" name="last_30"
+                        domain="[('diagnosed_at', '&gt;=', (context_today() - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter string="Disease" name="group_disease" context="{'group_by': 'diagnosis_name'}"/>
+                <filter string="Region" name="group_region" context="{'group_by': 'region'}"/>
+                <filter string="Age bracket" name="group_age" context="{'group_by': 'age_bracket'}"/>
+                <filter string="Occupation" name="group_occupation" context="{'group_by': 'occupation'}"/>
+                <filter string="Day" name="group_day" context="{'group_by': 'diagnosed_date'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_taha_epidemiology_report" model="ir.actions.act_window">
+        <field name="name">Epidemiology events</field>
+        <field name="res_model">taha.epidemiology.report</field>
+        <field name="view_mode">graph,pivot,tree,form</field>
+        <field name="context">{'search_default_last_30': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No anonymized events yet</p>
+            <p>Clinic Odoo instances POST to /api/v1/epidemiology/sync. Names and identifiers never appear here.</p>
+        </field>
+    </record>
+
+    <record id="action_taha_epidemiology_graph_disease" model="ir.actions.act_window">
+        <field name="name">Disease prevalence</field>
+        <field name="res_model">taha.epidemiology.report</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_taha_epidemiology_report_graph"/>
+        <field name="context">{'search_default_last_30': 1, 'search_default_group_disease': 1}</field>
+    </record>
+
+    <record id="action_taha_epidemiology_graph_region" model="ir.actions.act_window">
+        <field name="name">Regional burden</field>
+        <field name="res_model">taha.epidemiology.report</field>
+        <field name="view_mode">graph</field>
+        <field name="view_id" ref="view_taha_epidemiology_report_graph_region"/>
+        <field name="context">{'search_default_last_30': 1}</field>
+    </record>
+
+    <record id="action_taha_epidemiology_pivot" model="ir.actions.act_window">
+        <field name="name">Region / age / disease</field>
+        <field name="res_model">taha.epidemiology.report</field>
+        <field name="view_mode">pivot</field>
+        <field name="view_id" ref="view_taha_epidemiology_report_pivot"/>
+        <field name="context">{'search_default_last_30': 1}</field>
+    </record>
+
+    <record id="view_taha_epidemiology_board" model="ir.ui.view">
+        <field name="name">taha.epidemiology.board.form</field>
+        <field name="model">board.board</field>
+        <field name="arch" type="xml">
+            <form string="Taha Group command center">
+                <board style="2-1">
+                    <column>
+                        <action name="%(action_taha_epidemiology_graph_disease)d" string="Disease prevalence"/>
+                        <action name="%(action_taha_epidemiology_pivot)d" string="Resource allocation matrix"/>
+                    </column>
+                    <column>
+                        <action name="%(action_taha_epidemiology_graph_region)d" string="Cases by region"/>
+                    </column>
+                </board>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_taha_epidemiology_board" model="ir.actions.act_window">
+        <field name="name">Outbreak dashboard</field>
+        <field name="res_model">board.board</field>
+        <field name="view_mode">form</field>
+        <field name="usage">menu</field>
+        <field name="view_id" ref="view_taha_epidemiology_board"/>
+    </record>
+
+    <menuitem id="menu_taha_epi_dash_root" name="Taha HQ Epidemiology" sequence="36"
+              web_icon="taha_epidemiology_dashboard,static/description/icon.png"
+              action="action_taha_epidemiology_board"/>
+    <menuitem id="menu_taha_epi_dash_board" name="Dashboard" parent="menu_taha_epi_dash_root"
+              action="action_taha_epidemiology_board" sequence="1"/>
+    <menuitem id="menu_taha_epi_dash_events" name="Events" parent="menu_taha_epi_dash_root"
+              action="action_taha_epidemiology_report" sequence="10"/>
+    <menuitem id="menu_taha_epi_dash_pivot" name="Pivot analysis" parent="menu_taha_epi_dash_root"
+              action="action_taha_epidemiology_pivot" sequence="20"/>
+</odoo>

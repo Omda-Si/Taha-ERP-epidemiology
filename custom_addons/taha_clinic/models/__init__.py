@@ -1,5 +1,7 @@
 from . import department
 from . import doctor
+from . import clinical_record
+from . import sync_queue
 from . import patient
 from . import appointment
 from . import prescription

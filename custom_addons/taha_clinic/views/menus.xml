@@ -12,7 +12,12 @@
     <menuitem id="menu_taha_clinic_appointment" name="Appointments" parent="menu_taha_clinic_root"
               action="action_taha_clinic_appointment" sequence="10"/>
     <menuitem id="menu_taha_clinic_patient" name="Patients" parent="menu_taha_clinic_root"
-              action="taha_epidemiology_sync.action_taha_clinical_patient" sequence="15"/>
+              action="action_taha_clinical_patient" sequence="15"/>
+    <menuitem id="menu_taha_clinic_diagnosis" name="Diagnoses" parent="menu_taha_clinic_root"
+              action="action_taha_clinical_diagnosis" sequence="16"/>
+    <menuitem id="menu_taha_clinic_sync_queue" name="Sync Queue" parent="menu_taha_clinic_root"
+              action="action_taha_epi_sync_queue" sequence="17"
+              groups="taha_clinic.group_manager"/>
     <menuitem id="menu_taha_clinic_prescription" name="Prescriptions" parent="menu_taha_clinic_root"
               action="action_taha_clinic_prescription" sequence="20"
               groups="taha_clinic.group_doctor"/>

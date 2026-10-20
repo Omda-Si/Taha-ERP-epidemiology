@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_taha_epi_dash" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.taha.epi.dashboard</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Taha HQ Epidemiology" string="Taha HQ Epidemiology" name="taha_epidemiology_dashboard" groups="taha_epidemiology_dashboard.group_manager">
+                    <block title="Clinic ingest API" name="taha_epi_dash_block">
+                        <setting string="Shared bearer token" help="Clinics send Authorization: Bearer or X-API-Key. Must match each clinic's Taha Epidemiology Settings.">
+                            <field name="taha_epi_dash_api_token" password="True"/>
+                        </setting>
+                        <setting string="HMAC secret" help="Optional. When set, clinics must sign the raw JSON body as X-Taha-Signature.">
+                            <field name="taha_epi_dash_hmac_secret" password="True"/>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_taha_epi_dash_config" model="ir.actions.act_window">
+        <field name="name">Ingest settings</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_id" ref="base.res_config_settings_view_form"/>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'taha_epidemiology_dashboard'}</field>
+    </record>
+
+    <menuitem id="menu_taha_epi_dash_config" name="Settings" parent="menu_taha_epi_dash_root"
+              action="action_taha_epi_dash_config" sequence="90"
+              groups="taha_epidemiology_dashboard.group_manager"/>
+</odoo>

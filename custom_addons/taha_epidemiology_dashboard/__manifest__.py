@@ -1,0 +1,20 @@
+{
+    "name": "Taha HQ Epidemiology",
+    "version": "1.0.2",
+    "summary": "Central Taha Group dashboard for anonymized outbreak monitoring",
+    "category": "Healthcare",
+    "author": "SDT Creative",
+    "license": "LGPL-3",
+    "depends": ["web", "board", "mail"],
+    "data": [
+        "security/taha_epidemiology_dashboard_groups.xml",
+        "security/ir.model.access.csv",
+        "data/example_reports.xml",
+        "views/epidemiology_dashboard_views.xml",
+        "views/res_config_settings_views.xml",
+    ],
+    "images": ["static/description/icon.png"],
+    "post_init_hook": "post_init_hook",
+    "application": True,
+    "installable": True,
+}

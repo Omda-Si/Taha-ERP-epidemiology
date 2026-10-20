@@ -80,7 +80,4 @@
         </field>
     </record>
 
-    <menuitem id="menu_taha_epi_sync_queue" name="Sync Queue" parent="menu_taha_epi_root"
-              action="action_taha_epi_sync_queue" sequence="30"
-              groups="taha_epidemiology_sync.group_manager"/>
 </odoo>
