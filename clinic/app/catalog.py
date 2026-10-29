@@ -23,6 +23,8 @@ OCCUPATIONS = [
     "Office worker",
     "Merchant",
     "Homemaker",
+    "Nurse",
+    "Child",
     "Unemployed",
     "Other",
 ]

@@ -40,6 +40,5 @@ def anonymize_diagnosis(patient: Patient, diagnosis: Diagnosis) -> dict:
         "city": patient.city or settings.facility_city,
         "district": patient.district or settings.facility_district,
         "region": patient.region or settings.facility_region,
-        "gender": patient.gender,
-        "diagnosed_at": diagnosed_at.isoformat(),
+        "diagnosed_at": diagnosed_at.strftime("%Y-%m-%dT%H:%M:%SZ"),
     }

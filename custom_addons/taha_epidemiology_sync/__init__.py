@@ -1,2 +1,2 @@
-# Merged into taha_clinic. Kept as a stub so Odoo can mark this module uninstalled
-# without dropping taha.clinical.* tables.
+# Removed. Clinic sync lives in clinic/ (Python desktop app) or was previously
+# merged into the old Odoo clinic module. This stub keeps Odoo startable.

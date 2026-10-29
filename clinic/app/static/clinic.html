@@ -3,76 +3,176 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Clinic ERP · Epidemiological Sync</title>
+  <title>Taha Clinic</title>
   <link rel="stylesheet" href="/static/clinic.css" />
 </head>
 <body>
-  <header>
-    <div>
-      <p class="eyebrow">Local clinic / hospital ERP</p>
-      <h1 id="facilityName">Clinic</h1>
-      <p class="sub" id="facilityMeta"></p>
-    </div>
-    <div class="status-pill" id="syncStatus">Queue idle</div>
-  </header>
-  <main>
-    <section class="panel">
-      <h2>1. Register patient <small>stays in this clinic</small></h2>
-      <form id="patientForm" class="grid">
-        <label>Full name<input name="full_name" required /></label>
-        <label>Phone<input name="phone" /></label>
-        <label>Email<input name="email" type="email" /></label>
-        <label>National ID<input name="national_id" /></label>
-        <label>Street address<input name="street_address" /></label>
-        <label>Date of birth<input name="date_of_birth" type="date" required /></label>
-        <label>Gender
-          <select name="gender">
-            <option value="female">Female</option>
-            <option value="male">Male</option>
-            <option value="other">Other</option>
-            <option value="unknown">Unknown</option>
-          </select>
-        </label>
-        <label>Occupation<select name="occupation" id="occupation"></select></label>
-        <label>City<select name="cityKey" id="cityKey"></select></label>
-        <button type="submit">Save patient locally</button>
-      </form>
-    </section>
-
-    <section class="panel">
-      <h2>2. Log diagnosis <small>triggers anonymized sync</small></h2>
-      <form id="diagnosisForm" class="grid">
-        <label>Patient<select name="patient_id" id="patientSelect" required></select></label>
-        <label>Disease<select name="disease" id="disease" required></select></label>
-        <label class="wide">Clinical notes (local only)<textarea name="clinical_notes" rows="3"></textarea></label>
-        <button type="submit">Save diagnosis and queue sync</button>
-      </form>
-      <pre id="lastPayload" class="payload hidden"></pre>
-    </section>
-
-    <section class="panel">
-      <div class="row">
-        <h2>3. Offline sync queue</h2>
-        <button id="flushBtn" type="button">Retry now</button>
+  <aside>
+    <p class="brand">Taha Clinic</p>
+    <p class="brand-sub" id="facilityName">Local clinic</p>
+    <nav>
+      <button class="nav active" data-page="home">Dashboard</button>
+      <button class="nav" data-page="patients">Patients</button>
+      <button class="nav" data-page="appointments">Appointments</button>
+      <button class="nav" data-page="diagnoses">Diagnoses</button>
+      <button class="nav" data-page="billing">Billing</button>
+      <button class="nav" data-page="prescriptions">Prescriptions</button>
+      <button class="nav" data-page="sync">HQ sync</button>
+    </nav>
+    <p class="aside-note">Patient names stay on this computer. Only anonymized diagnoses go to HQ.</p>
+  </aside>
+  <div class="workspace">
+    <header>
+      <div>
+        <h1 id="pageTitle">Dashboard</h1>
+        <p class="sub" id="facilityMeta"></p>
       </div>
-      <p class="help">If the Taha Group server is unreachable, anonymized records stay here and retry automatically.</p>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Status</th>
-              <th>Disease</th>
-              <th>Age</th>
-              <th>Occupation</th>
-              <th>Location</th>
-              <th>Attempts</th>
-            </tr>
-          </thead>
-          <tbody id="queueBody"></tbody>
-        </table>
-      </div>
-    </section>
-  </main>
+      <div class="status-pill" id="syncStatus">Queue idle</div>
+    </header>
+    <main>
+      <section class="page active" id="page-home">
+        <div class="cards" id="dashCards"></div>
+      </section>
+
+      <section class="page" id="page-patients">
+        <div class="panel">
+          <h2>Register patient</h2>
+          <form id="patientForm" class="grid">
+            <label>Full name<input name="full_name" required /></label>
+            <label>Phone<input name="phone" /></label>
+            <label>Email<input name="email" type="email" /></label>
+            <label>National ID<input name="national_id" /></label>
+            <label>Street address<input name="street_address" /></label>
+            <label>Date of birth<input name="date_of_birth" type="date" required /></label>
+            <label>Gender
+              <select name="gender">
+                <option value="female">Female</option>
+                <option value="male">Male</option>
+                <option value="other">Other</option>
+                <option value="unknown">Unknown</option>
+              </select>
+            </label>
+            <label>Occupation<select name="occupation" id="occupation"></select></label>
+            <label>City<select name="cityKey" id="cityKey"></select></label>
+            <button type="submit">Save patient</button>
+          </form>
+        </div>
+        <div class="panel">
+          <h2>Patient files</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>Phone</th><th>Occupation</th><th>City</th></tr></thead>
+              <tbody id="patientTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-appointments">
+        <div class="panel">
+          <h2>Book visit</h2>
+          <form id="appointmentForm" class="grid">
+            <label>Patient<select name="patient_id" class="patient-select" required></select></label>
+            <label>Doctor<select name="doctor_id" id="doctorSelect" required></select></label>
+            <label>When<input name="scheduled_at" type="datetime-local" required /></label>
+            <label>Visit type
+              <select name="visit_type">
+                <option value="walkin">Walk-in</option>
+                <option value="appointment">Scheduled</option>
+                <option value="followup">Follow-up</option>
+                <option value="emergency">Emergency</option>
+              </select>
+            </label>
+            <label class="wide">Chief complaint<input name="chief_complaint" /></label>
+            <button type="submit">Save appointment</button>
+          </form>
+        </div>
+        <div class="panel">
+          <h2>Today’s board</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Time</th><th>Patient</th><th>Doctor</th><th>Type</th><th>Fee</th><th>Payment</th></tr></thead>
+              <tbody id="appointmentTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-diagnoses">
+        <div class="panel">
+          <h2>Log diagnosis</h2>
+          <p class="help">Saving this queues an anonymized payload. Names and IDs are stripped first.</p>
+          <form id="diagnosisForm" class="grid">
+            <label>Patient<select name="patient_id" class="patient-select" required></select></label>
+            <label>Disease<select name="disease" id="disease" required></select></label>
+            <label class="wide">Clinical notes (local only)<textarea name="clinical_notes" rows="3"></textarea></label>
+            <button type="submit">Save diagnosis and sync</button>
+          </form>
+          <pre id="lastPayload" class="payload hidden"></pre>
+        </div>
+      </section>
+
+      <section class="page" id="page-billing">
+        <div class="panel">
+          <h2>Consultation invoices</h2>
+          <p class="help">Mark a visit paid after cash is received. This stays in the clinic.</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Patient</th><th>Doctor</th><th>Fee</th><th>Status</th><th></th></tr></thead>
+              <tbody id="billingTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-prescriptions">
+        <div class="panel">
+          <h2>Write prescription</h2>
+          <form id="prescriptionForm" class="grid">
+            <label>Patient<select name="patient_id" class="patient-select" required></select></label>
+            <label>Medication<input name="medication" required /></label>
+            <label>Dose<input name="dose" required placeholder="500mg twice daily" /></label>
+            <label class="wide">Instructions<input name="instructions" /></label>
+            <button type="submit">Save prescription</button>
+          </form>
+        </div>
+        <div class="panel">
+          <h2>Recent prescriptions</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Patient</th><th>Medication</th><th>Dose</th><th>When</th></tr></thead>
+              <tbody id="prescriptionTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-sync">
+        <div class="panel">
+          <div class="row">
+            <h2>Anonymized HQ queue</h2>
+            <button id="flushBtn" type="button">Retry now</button>
+          </div>
+          <p class="help">HQ receives disease, age group, occupation and region only.</p>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Status</th>
+                  <th>Disease</th>
+                  <th>Age</th>
+                  <th>Occupation</th>
+                  <th>Location</th>
+                  <th>Attempts</th>
+                </tr>
+              </thead>
+              <tbody id="queueBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
   <script src="/static/clinic.js"></script>
 </body>
 </html>

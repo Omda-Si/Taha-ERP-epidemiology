@@ -26,6 +26,8 @@ class Patient(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     diagnoses: Mapped[list["Diagnosis"]] = relationship(back_populates="patient")
+    appointments: Mapped[list["Appointment"]] = relationship(back_populates="patient")
+    prescriptions: Mapped[list["Prescription"]] = relationship(back_populates="patient")
 
 
 class Diagnosis(Base):
@@ -58,3 +60,47 @@ class SyncQueue(Base):
     synced_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 
     diagnosis: Mapped[Diagnosis] = relationship(back_populates="queue_item")
+
+
+class Doctor(Base):
+    __tablename__ = "doctors"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String(128), nullable=False)
+    specialty: Mapped[str] = mapped_column(String(64), nullable=False, default="General medicine")
+    consultation_fee: Mapped[int] = mapped_column(Integer, nullable=False, default=50)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+    appointments: Mapped[list["Appointment"]] = relationship(back_populates="doctor")
+
+
+class Appointment(Base):
+    __tablename__ = "appointments"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    patient_id: Mapped[int] = mapped_column(ForeignKey("patients.id"), nullable=False)
+    doctor_id: Mapped[int] = mapped_column(ForeignKey("doctors.id"), nullable=False)
+    scheduled_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+    visit_type: Mapped[str] = mapped_column(String(32), nullable=False, default="walkin")
+    state: Mapped[str] = mapped_column(String(24), nullable=False, default="confirmed")
+    chief_complaint: Mapped[str | None] = mapped_column(String(256), nullable=True)
+    consultation_fee: Mapped[int] = mapped_column(Integer, nullable=False, default=50)
+    payment_state: Mapped[str] = mapped_column(String(16), nullable=False, default="unpaid")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+    patient: Mapped[Patient] = relationship(back_populates="appointments")
+    doctor: Mapped[Doctor] = relationship(back_populates="appointments")
+
+
+class Prescription(Base):
+    __tablename__ = "prescriptions"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    patient_id: Mapped[int] = mapped_column(ForeignKey("patients.id"), nullable=False)
+    doctor_id: Mapped[int | None] = mapped_column(ForeignKey("doctors.id"), nullable=True)
+    medication: Mapped[str] = mapped_column(String(128), nullable=False)
+    dose: Mapped[str] = mapped_column(String(64), nullable=False)
+    instructions: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+    patient: Mapped[Patient] = relationship(back_populates="prescriptions")

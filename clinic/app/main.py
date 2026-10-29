@@ -14,7 +14,7 @@ from app import catalog
 from app.anonymizer import anonymize_diagnosis
 from app.config import settings
 from app.db import Base, SessionLocal, engine, get_db
-from app.models import Diagnosis, Patient, SyncQueue
+from app.models import Appointment, Diagnosis, Doctor, Patient, Prescription, SyncQueue
 from app.sync import flush_queue
 
 STATIC_DIR = Path(__file__).parent / "static"
@@ -41,6 +41,28 @@ class DiagnosisIn(BaseModel):
     clinical_notes: str | None = None
 
 
+class DoctorIn(BaseModel):
+    name: str = Field(min_length=2, max_length=128)
+    specialty: str = "General medicine"
+    consultation_fee: int = 50
+
+
+class AppointmentIn(BaseModel):
+    patient_id: int
+    doctor_id: int
+    scheduled_at: datetime
+    visit_type: str = "walkin"
+    chief_complaint: str | None = None
+
+
+class PrescriptionIn(BaseModel):
+    patient_id: int
+    doctor_id: int | None = None
+    medication: str
+    dose: str
+    instructions: str | None = None
+
+
 async def _sync_loop() -> None:
     await asyncio.sleep(2)
     while True:
@@ -55,6 +77,15 @@ async def _sync_loop() -> None:
 
 
 def _seed_if_empty(db: Session) -> None:
+    if not db.query(Doctor).first():
+        db.add_all(
+            [
+                Doctor(name="Dr. Lina Osman", specialty="General medicine", consultation_fee=50),
+                Doctor(name="Dr. Tarig Mohamed", specialty="Emergency", consultation_fee=80),
+                Doctor(name="Dr. Hana Ali", specialty="Pediatrics", consultation_fee=60),
+            ]
+        )
+        db.commit()
     if db.query(Patient).first():
         return
     patient = Patient(
@@ -87,7 +118,7 @@ async def lifespan(_: FastAPI):
     task.cancel()
 
 
-app = FastAPI(title="Clinic ERP · Taha Epidemiology Sync", version="1.0.0", lifespan=lifespan)
+app = FastAPI(title="Taha Clinic", version="2.0.0", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 
@@ -192,6 +223,120 @@ def list_queue(db: Session = Depends(get_db)):
 @app.post("/api/queue/flush")
 def flush(db: Session = Depends(get_db)):
     return flush_queue(db)
+
+
+@app.get("/api/doctors")
+def list_doctors(db: Session = Depends(get_db)):
+    doctors = db.query(Doctor).order_by(Doctor.name).all()
+    return [
+        {
+            "id": doctor.id,
+            "name": doctor.name,
+            "specialty": doctor.specialty,
+            "consultation_fee": doctor.consultation_fee,
+        }
+        for doctor in doctors
+    ]
+
+
+@app.post("/api/doctors")
+def create_doctor(payload: DoctorIn, db: Session = Depends(get_db)):
+    doctor = Doctor(**payload.model_dump())
+    db.add(doctor)
+    db.commit()
+    db.refresh(doctor)
+    return {"id": doctor.id}
+
+
+@app.get("/api/appointments")
+def list_appointments(db: Session = Depends(get_db)):
+    rows = db.query(Appointment).order_by(Appointment.scheduled_at.desc()).all()
+    return [
+        {
+            "id": row.id,
+            "patient_id": row.patient_id,
+            "patient_name": row.patient.full_name,
+            "doctor_id": row.doctor_id,
+            "doctor_name": row.doctor.name,
+            "scheduled_at": row.scheduled_at.isoformat(sep=" ", timespec="minutes"),
+            "visit_type": row.visit_type,
+            "state": row.state,
+            "chief_complaint": row.chief_complaint,
+            "consultation_fee": row.consultation_fee,
+            "payment_state": row.payment_state,
+        }
+        for row in rows
+    ]
+
+
+@app.post("/api/appointments")
+def create_appointment(payload: AppointmentIn, db: Session = Depends(get_db)):
+    patient = db.get(Patient, payload.patient_id)
+    doctor = db.get(Doctor, payload.doctor_id)
+    if not patient or not doctor:
+        raise HTTPException(status_code=404, detail="Patient or doctor not found")
+    row = Appointment(
+        patient_id=patient.id,
+        doctor_id=doctor.id,
+        scheduled_at=payload.scheduled_at,
+        visit_type=payload.visit_type,
+        chief_complaint=payload.chief_complaint,
+        consultation_fee=doctor.consultation_fee,
+    )
+    db.add(row)
+    db.commit()
+    db.refresh(row)
+    return {"id": row.id}
+
+
+@app.post("/api/appointments/{appointment_id}/pay")
+def pay_appointment(appointment_id: int, db: Session = Depends(get_db)):
+    row = db.get(Appointment, appointment_id)
+    if not row:
+        raise HTTPException(status_code=404, detail="Appointment not found")
+    row.payment_state = "paid"
+    row.state = "done"
+    db.commit()
+    return {"id": row.id, "payment_state": row.payment_state}
+
+
+@app.get("/api/prescriptions")
+def list_prescriptions(db: Session = Depends(get_db)):
+    rows = db.query(Prescription).order_by(Prescription.created_at.desc()).all()
+    return [
+        {
+            "id": row.id,
+            "patient_name": row.patient.full_name,
+            "medication": row.medication,
+            "dose": row.dose,
+            "instructions": row.instructions,
+            "created_at": row.created_at.isoformat(sep=" ", timespec="minutes"),
+        }
+        for row in rows
+    ]
+
+
+@app.post("/api/prescriptions")
+def create_prescription(payload: PrescriptionIn, db: Session = Depends(get_db)):
+    patient = db.get(Patient, payload.patient_id)
+    if not patient:
+        raise HTTPException(status_code=404, detail="Patient not found")
+    row = Prescription(**payload.model_dump())
+    db.add(row)
+    db.commit()
+    db.refresh(row)
+    return {"id": row.id}
+
+
+@app.get("/api/dashboard")
+def dashboard(db: Session = Depends(get_db)):
+    return {
+        "patients": db.query(Patient).count(),
+        "appointments": db.query(Appointment).count(),
+        "diagnoses": db.query(Diagnosis).count(),
+        "unpaid": db.query(Appointment).filter(Appointment.payment_state == "unpaid").count(),
+        "queue_pending": db.query(SyncQueue).filter(SyncQueue.status.in_(["pending", "failed"])).count(),
+    }
 
 
 @app.get("/health")
