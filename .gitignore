@@ -1,0 +1,15 @@
+# secrets / local
+.env
+**/.env
+GIVE_TO_FRIEND.env
+*.db
+
+# python
+**/__pycache__/
+**/.venv/
+*.pyc
+
+# os / editor
+.DS_Store
+.claude/
+.cursor/
