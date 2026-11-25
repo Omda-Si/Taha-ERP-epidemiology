@@ -42,6 +42,8 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
   }, [routerSearch]);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.location.pathname !== pathname || window.location.search !== routerSearch) return;
     setOverride(null);
   }, [pathname, routerSearch]);
 

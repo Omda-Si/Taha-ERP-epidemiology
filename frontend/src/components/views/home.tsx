@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Link } from "@/components/link";
 import { Logo, Mark } from "@/components/logo";
 import { prefetchAllDeskPages, prefetchHqRoute } from "@/lib/prefetch-route";
@@ -18,8 +19,11 @@ const BOARD = [
 ];
 
 export function HomeView() {
+  const router = useRouter();
+
   useEffect(() => {
     prefetchAllDeskPages();
+    for (const item of NAV) router.prefetch(item.href);
     const runHq = () => prefetchHqRoute();
     if (typeof requestIdleCallback !== "undefined") {
       const id = requestIdleCallback(runHq);
@@ -27,7 +31,7 @@ export function HomeView() {
     }
     const t = window.setTimeout(runHq, 0);
     return () => window.clearTimeout(t);
-  }, []);
+  }, [router]);
 
 
   return (
