@@ -22,7 +22,7 @@ function queryValue(search: string, key: string) {
 
 export function ClinicScreen({ path, search }: { path: string; search: string }) {
   if (path === "/clinic") return <ClinicBoard />;
-  if (path === "/clinic/patients") return <PatientsView />;
+  if (path === "/clinic/patients") return <PatientsView key={search} initialQuery={queryValue(search, "q") ?? ""} />;
   if (path === "/clinic/patients/new") return <PatientForm />;
   if (path.startsWith("/clinic/patients/")) {
     const id = decodeURIComponent(path.slice("/clinic/patients/".length));
