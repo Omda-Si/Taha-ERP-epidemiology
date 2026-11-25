@@ -8,6 +8,11 @@ function deskPath(pathname: string) {
   return pathname === "/desk" || pathname.startsWith("/desk/");
 }
 
+function parseHref(href: string) {
+  const url = new URL(href, "http://local");
+  return { path: url.pathname, search: url.search };
+}
+
 export function Link({
   href,
   className,
@@ -27,47 +32,42 @@ export function Link({
   const pathname = usePathname();
   const { push } = useNav();
 
+  const warm = () => {
+    if (!href.startsWith("/")) return;
+    prefetchRoute(href);
+    router.prefetch(href);
+  };
+
   return (
     <a
       href={href}
       className={className}
       title={title}
       aria-label={ariaLabel}
-      onPointerEnter={() => {
-        if (href.startsWith("/")) prefetchRoute(href);
-      }}
-      onFocus={() => {
-        if (href.startsWith("/")) prefetchRoute(href);
-      }}
+      onPointerEnter={warm}
+      onFocus={warm}
       onClick={(event) => {
         if (event.defaultPrevented) return;
         if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
         if (!href.startsWith("/")) return;
         event.preventDefault();
-        prefetchRoute(href);
+        warm();
         onClick?.();
 
-        const target = parseHref(href);
-
-        if (deskPath(pathname) && deskPath(target.path)) {
+        if (deskPath(parseHref(href).path)) {
           router.push(href, { scroll: false });
           return;
         }
 
-        if (pathname !== "/") {
-          router.push(href, { scroll: false });
+        if (pathname === "/") {
+          push(href);
           return;
         }
 
-        push(href);
+        router.push(href, { scroll: false });
       }}
     >
       {children}
     </a>
   );
-}
-
-function parseHref(href: string) {
-  const url = new URL(href, "http://local");
-  return { path: url.pathname, search: url.search };
 }

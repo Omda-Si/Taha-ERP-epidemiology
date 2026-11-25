@@ -3,7 +3,6 @@
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { ClinicShell } from "@/components/shell";
-import { DeskRouter } from "@/components/desk-router";
 import { HqShellFallback } from "@/components/hq-shell-fallback";
 import { HomeView } from "@/components/views/home";
 import { useNav } from "@/lib/nav";
@@ -13,19 +12,13 @@ const HqShell = dynamic(() => import("@/components/hq-shell").then((m) => ({ def
 });
 
 export function AppFrame({ children }: { children: React.ReactNode }) {
-  const { path, search, instant } = useNav();
+  const { path, instant } = useNav();
   const pathname = usePathname();
 
   let view: React.ReactNode;
 
-  if (path === "/") {
+  if (pathname === "/") {
     view = <HomeView />;
-  } else if (pathname.startsWith("/desk")) {
-    view = children;
-  } else if (path.startsWith("/desk")) {
-    view = (
-      <DeskRouter key={`${path}${search}`} path={path} search={search} />
-    );
   } else if (instant && path.startsWith("/clinic")) {
     view = pathname.startsWith("/clinic") ? children : <ClinicShell />;
   } else if (instant && path.startsWith("/hq")) {
