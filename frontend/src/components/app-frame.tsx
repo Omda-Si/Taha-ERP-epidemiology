@@ -9,15 +9,21 @@ export function AppFrame({ children }: { children: React.ReactNode }) {
   const { path, instant } = useNav();
   const pathname = usePathname();
 
-  if (path === "/") return <HomeView />;
+  let view: React.ReactNode;
 
-  if (instant && path.startsWith("/clinic")) {
-    return pathname.startsWith("/clinic") ? children : <ClinicShell />;
-  }
-  if (instant && path.startsWith("/hq")) {
-    return pathname.startsWith("/hq") ? children : <HqShell />;
+  if (path === "/") {
+    view = <HomeView />;
+  } else if (instant && path.startsWith("/clinic")) {
+    view = pathname.startsWith("/clinic") ? children : <ClinicShell />;
+  } else if (instant && path.startsWith("/hq")) {
+    view = pathname.startsWith("/hq") ? children : <HqShell />;
+  } else {
+    view = children;
   }
 
-  if (!instant) return children;
-  return children;
+  return (
+    <div className="h-dvh min-h-dvh overflow-hidden supports-[height:100dvh]:h-[100dvh] supports-[height:100dvh]:min-h-[100dvh]">
+      {view}
+    </div>
+  );
 }
