@@ -17,7 +17,7 @@ import {
   IconUser,
   IconUsers,
 } from "@/components/clinic-icons";
-import { Logo, Mark } from "@/components/logo";
+import { Logo } from "@/components/logo";
 import { ClinicScreen, HqScreen } from "@/components/screens";
 import { cx } from "@/lib/format";
 import { useClinic } from "@/lib/clinic-store";
@@ -137,7 +137,6 @@ export function ClinicShell({ children: _children }: { children?: React.ReactNod
   const { path, search, push } = useNav();
   const body = <ClinicScreen key={`${path}${search}`} path={path} search={search} />;
   const waiting = state.queue.filter((row) => row.status === "pending" || row.status === "failed").length;
-  const onBoard = path === "/clinic";
   const mainRef = useRef<HTMLElement>(null);
 
   const [collapsed, setCollapsed] = useState(false);
@@ -169,30 +168,76 @@ export function ClinicShell({ children: _children }: { children?: React.ReactNod
 
   return (
     <div className="h-dvh min-h-dvh bg-white">
-      <div className="mx-auto flex h-full w-full max-w-[1440px] bg-white">
-        <aside
+      <div className="mx-auto flex h-full w-full max-w-[1440px] flex-col bg-white">
+        <div className="flex shrink-0 items-stretch border-b border-[#eef2f6] bg-white">
+          <div className="flex w-[220px] shrink-0 items-center gap-1.5 border-r border-[#eef2f6] px-3 py-3">
+            <Link href="/" className="min-w-0 flex-1" title="Taha Clinic">
+              <Logo />
+            </Link>
+            <button
+              type="button"
+              onClick={toggleSidebar}
+              className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-[#e8edf3] text-[#64748b] transition hover:border-clinic/30 hover:bg-[#f4f7fb] hover:text-clinic"
+              aria-expanded={!collapsed}
+              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+              <IconSidebarToggle collapsed={collapsed} />
+            </button>
+          </div>
+          <div className="flex min-h-[4.25rem] min-w-0 flex-1 flex-wrap items-center gap-3 bg-[#f8fafc] px-4 py-3 md:px-5">
+            <form
+              className="flex min-w-[200px] flex-1 items-center gap-3 rounded-full border border-[#e8edf3] bg-white px-4 py-2.5"
+              onSubmit={(event) => {
+                event.preventDefault();
+                const query = String(new FormData(event.currentTarget).get("q") ?? "").trim();
+                push(query ? `/clinic/patients?q=${encodeURIComponent(query)}` : "/clinic/patients");
+              }}
+            >
+              <span className="text-[#94a3b8]">
+                <IconSearch />
+              </span>
+              <input
+                name="q"
+                placeholder="Search anything here"
+                aria-label="Search anything here"
+                className="min-w-0 flex-1 bg-transparent text-sm text-[#334155] outline-none placeholder:text-[#94a3b8]"
+              />
+            </form>
+            <div className="ml-auto flex items-center gap-2">
+              <span
+                className={cx(
+                  "hidden rounded-full px-2.5 py-1 text-xs font-medium sm:inline",
+                  state.facility.online ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700",
+                )}
+              >
+                {state.facility.online ? "Online" : "Offline"}
+              </span>
+              <Link
+                href="/clinic/sync"
+                className="relative grid h-10 w-10 place-items-center rounded-full border border-[#e8edf3] bg-white text-[#64748b]"
+                aria-label="Notifications"
+              >
+                <IconBell />
+                {waiting ? <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-clinic" /> : null}
+              </Link>
+              <Link href="/clinic/settings" className="flex items-center gap-2 rounded-full border border-[#e8edf3] bg-white py-1.5 pl-1.5 pr-3">
+                <span className="grid h-8 w-8 place-items-center rounded-full bg-clinic text-xs font-semibold text-white">RN</span>
+                <span className="hidden text-left text-xs leading-tight sm:block">
+                  <span className="block font-semibold text-[#0f172a]">Reception</span>
+                  <span className="text-[#94a3b8]">Taha Clinic</span>
+                </span>
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex min-h-0 flex-1">
+          <aside
           className={cx(
-            "sticky top-0 z-30 flex h-dvh shrink-0 flex-col border-r border-[#eef2f6] bg-white transition-[width] duration-200 ease-out",
+            "z-30 flex min-h-0 shrink-0 flex-col border-r border-[#eef2f6] bg-white transition-[width] duration-200 ease-out",
             collapsed ? "w-[68px] overflow-visible" : "w-[220px]",
           )}
         >
-          <div className={cx("sticky top-0 z-10 shrink-0 border-b border-transparent bg-white", collapsed ? "px-2 pt-4 pb-2" : "px-3 pt-4 pb-2")}>
-            <div className={cx("flex items-center", collapsed ? "flex-col gap-2" : "gap-1")}>
-              <Link href="/" className={cx("min-w-0", collapsed ? "grid place-items-center" : "inline-block flex-1")} title="Taha Clinic">
-                {collapsed ? <Mark className="h-8 w-8 shrink-0" /> : <Logo />}
-              </Link>
-              <button
-                type="button"
-                onClick={toggleSidebar}
-                className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-[#e8edf3] text-[#64748b] transition hover:border-clinic/30 hover:bg-[#f4f7fb] hover:text-clinic"
-                aria-expanded={!collapsed}
-                aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-              >
-                <IconSidebarToggle collapsed={collapsed} />
-              </button>
-            </div>
-          </div>
-
           <div
             className={cx(
               "flex min-h-0 flex-1 flex-col overscroll-contain",
@@ -224,61 +269,11 @@ export function ClinicShell({ children: _children }: { children?: React.ReactNod
           <div className={cx("sticky bottom-0 shrink-0 border-t border-[#eef2f6] bg-white py-3", collapsed ? "px-1.5" : "px-2.5")}>
             <NavItem href="/hq" label="Headquarters" icon={<IconUsers />} compact={collapsed} />
           </div>
-        </aside>
+          </aside>
 
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col bg-[#f8fafc]">
-          <header className="sticky top-0 z-10 flex shrink-0 flex-wrap items-center gap-3 border-b border-[#f3f4f6] bg-white px-5 py-4 md:px-6">
-            {onBoard ? (
-              <div className="min-h-[42px] min-w-[220px] flex-1" aria-hidden />
-            ) : (
-              <form
-                className="flex min-w-[220px] flex-1 items-center gap-3 rounded-full border border-[#e8edf3] bg-[#f8fafc] px-4 py-2.5"
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  const query = String(new FormData(event.currentTarget).get("q") ?? "").trim();
-                  push(query ? `/clinic/patients?q=${encodeURIComponent(query)}` : "/clinic/patients");
-                }}
-              >
-                <span className="text-[#94a3b8]">
-                  <IconSearch />
-                </span>
-                <input
-                  name="q"
-                  placeholder="Search anything here"
-                  aria-label="Search anything here"
-                  className="min-w-0 flex-1 bg-transparent text-sm text-[#334155] outline-none placeholder:text-[#94a3b8]"
-                />
-              </form>
-            )}
-            <div className="ml-auto flex items-center gap-2">
-              <span
-                className={cx(
-                  "hidden rounded-full px-2.5 py-1 text-xs font-medium sm:inline",
-                  state.facility.online ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700",
-                )}
-              >
-                {state.facility.online ? "Online" : "Offline"}
-              </span>
-              <Link
-                href="/clinic/sync"
-                className="relative grid h-10 w-10 place-items-center rounded-full border border-[#e8edf3] bg-white text-[#64748b]"
-                aria-label="Notifications"
-              >
-                <IconBell />
-                {waiting ? <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-clinic" /> : null}
-              </Link>
-              <Link href="/clinic/settings" className="flex items-center gap-2 rounded-full border border-[#e8edf3] bg-white py-1.5 pl-1.5 pr-3">
-                <span className="grid h-8 w-8 place-items-center rounded-full bg-clinic text-xs font-semibold text-white">RN</span>
-                <span className="text-left text-xs leading-tight">
-                  <span className="block font-semibold text-[#0f172a]">Reception</span>
-                  <span className="text-[#94a3b8]">Taha Clinic</span>
-                </span>
-              </Link>
-            </div>
-          </header>
           <main
             ref={mainRef}
-            className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4 pb-5 md:px-5"
+            className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain bg-[#f8fafc] px-4 py-4 pb-5 md:px-5"
           >
             {body}
           </main>
