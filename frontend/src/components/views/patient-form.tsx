@@ -1,14 +1,14 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { GEO, OCCUPATIONS } from "@/lib/catalog";
 import { useClinic } from "@/lib/clinic-store";
+import { useNav } from "@/lib/nav";
 import { Button, Field, PageHeader, inputClass } from "@/components/ui";
 
 export function PatientForm() {
   const { state, registerPatient } = useClinic();
-  const router = useRouter();
+  const { push } = useNav();
   const [region, setRegion] = useState(GEO[0].region);
   const regionRow = GEO.find((row) => row.region === region) ?? GEO[0];
   const [city, setCity] = useState(regionRow.cities[0].name);
@@ -57,7 +57,7 @@ export function PatientForm() {
       district,
       region,
     });
-    router.push(`/clinic/patients/${patient.id}`);
+    push(`/clinic/patients/${patient.id}`);
   }
 
   return (

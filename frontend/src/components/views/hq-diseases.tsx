@@ -8,10 +8,18 @@ import { ICD } from "@/lib/catalog";
 import { countBy, weeklySeries } from "@/lib/stats";
 import { useCentralEvents } from "@/lib/use-central-events";
 
-export function HqDiseases() {
+export function HqDiseases({ code: codeProp }: { code?: string | null } = {}) {
+  if (codeProp !== undefined) return <HqDiseasesBody initial={codeProp} />;
+  return <HqDiseasesFromRoute />;
+}
+
+function HqDiseasesFromRoute() {
   const params = useSearchParams();
+  return <HqDiseasesBody initial={params.get("code")} />;
+}
+
+function HqDiseasesBody({ initial }: { initial: string | null }) {
   const events = useCentralEvents();
-  const initial = params.get("code");
   const [code, setCode] = useState(ICD.some((row) => row.code === initial) ? initial! : ICD[0].code);
   const disease = ICD.find((row) => row.code === code) ?? ICD[0];
   const subset = useMemo(() => events.filter((event) => event.diagnosis_code === code), [events, code]);

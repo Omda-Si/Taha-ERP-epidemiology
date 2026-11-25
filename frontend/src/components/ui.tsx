@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { cx } from "@/lib/format";
 import type { SyncStatus } from "@/lib/types";
 

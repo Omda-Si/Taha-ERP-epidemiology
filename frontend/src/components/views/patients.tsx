@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { useMemo, useState } from "react";
 import { ageInYears, toBracket } from "@/lib/anonymize";
 import { useClinic } from "@/lib/clinic-store";
