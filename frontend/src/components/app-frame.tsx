@@ -1,24 +1,31 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { usePathname } from "next/navigation";
 import { ClinicShell } from "@/components/shell";
+import { DeskRouter } from "@/components/desk-router";
 import { HqShellFallback } from "@/components/hq-shell-fallback";
 import { HomeView } from "@/components/views/home";
 import { useNav } from "@/lib/nav";
-import { usePathname } from "next/navigation";
 
-const HqShell = dynamic(() => import("@/components/hq-shell").then((m) => m.HqShell), {
+const HqShell = dynamic(() => import("@/components/hq-shell").then((m) => ({ default: m.HqShell })), {
   loading: () => <HqShellFallback />,
 });
 
 export function AppFrame({ children }: { children: React.ReactNode }) {
-  const { path, instant } = useNav();
+  const { path, search, instant } = useNav();
   const pathname = usePathname();
 
   let view: React.ReactNode;
 
   if (path === "/") {
     view = <HomeView />;
+  } else if (pathname.startsWith("/desk")) {
+    view = children;
+  } else if (path.startsWith("/desk")) {
+    view = (
+      <DeskRouter key={`${path}${search}`} path={path} search={search} />
+    );
   } else if (instant && path.startsWith("/clinic")) {
     view = pathname.startsWith("/clinic") ? children : <ClinicShell />;
   } else if (instant && path.startsWith("/hq")) {

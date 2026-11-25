@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useSearchParams } from "next/navigation";
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, startTransition } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 type Loc = { path: string; search: string };
 
@@ -43,7 +43,7 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     setOverride(null);
-  }, [pathname]);
+  }, [pathname, routerSearch]);
 
   const push = useCallback((href: string) => {
     const next = parseHref(href);
@@ -53,7 +53,7 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
     window.scrollTo(0, 0);
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
-    startTransition(() => setOverride(next));
+    setOverride(next);
   }, []);
 
   const api = useMemo<NavApi>(
