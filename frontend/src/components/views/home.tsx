@@ -4,18 +4,12 @@ import { Link } from "@/components/link";
 import { Logo, Mark } from "@/components/logo";
 
 const NAV = [
-  { href: "/clinic", label: "Clinic" },
-  { href: "/hq", label: "Surveillance desk" },
   { href: "/clinic/diagnose", label: "Record diagnosis" },
   { href: "/clinic/sync", label: "Sync queue" },
   { href: "/hq/diseases", label: "Disease signals" },
 ] as const;
 
-const MOBILE_QUICK = [
-  { href: "/clinic", label: "Clinic" },
-  { href: "/hq", label: "Desk" },
-  { href: "/clinic/sync", label: "Queue" },
-] as const;
+const MOBILE_QUICK = NAV;
 
 const BOARD = [
   { id: "apt_ibrahim_today", name: "Ibrahim Osman", doctor: "Dr. Hassan Idris", reason: "Vomiting", when: "08:00", state: "Completed" },
@@ -25,7 +19,7 @@ const BOARD = [
 
 export function HomeView() {
   return (
-    <main className="fixed inset-0 flex flex-col overflow-hidden bg-white">
+    <main className="flex h-full min-h-0 flex-col overflow-hidden bg-white">
       <div className="flex h-full min-h-0 flex-col">
         <header className="relative flex items-center justify-between gap-4 px-5 py-3.5 sm:px-7">
           <Link href="/" className="relative z-10 shrink-0">

@@ -50,6 +50,9 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
     const target = `${next.path}${next.search}`;
     if (`${window.location.pathname}${window.location.search}` === target) return;
     window.history.pushState(null, "", target);
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
     setOverride(next);
   }, []);
 

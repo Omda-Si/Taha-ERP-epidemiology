@@ -148,7 +148,7 @@ export function ClinicShell({ children: _children }: { children?: React.ReactNod
 
   const navCompact = collapsed && !mobileNavOpen;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     try {
       const saved = localStorage.getItem(SIDEBAR_KEY);
       if (saved === "1") setCollapsed(true);
@@ -157,7 +157,7 @@ export function ClinicShell({ children: _children }: { children?: React.ReactNod
     }
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     mainRef.current?.scrollTo({ top: 0, left: 0 });
   }, [path, search]);
 
@@ -195,7 +195,7 @@ export function ClinicShell({ children: _children }: { children?: React.ReactNod
   }
 
   return (
-    <div className="h-dvh min-h-dvh overflow-x-hidden bg-white supports-[height:100dvh]:min-h-[100dvh] supports-[height:100dvh]:h-[100dvh]">
+    <div className="h-full min-h-0 overflow-x-hidden bg-white">
       <div className="mx-auto flex h-full w-full max-w-[1440px] flex-col bg-white">
         <div className="flex shrink-0 flex-col border-b border-[#eef2f6] bg-white lg:flex-row lg:items-stretch">
           <div className="flex min-w-0 items-center gap-2 px-3 py-2.5 sm:gap-1.5 sm:py-3 lg:w-[220px] lg:shrink-0 lg:border-r lg:border-[#eef2f6]">
@@ -351,7 +351,7 @@ export function HqShell({ children: _children }: { children?: React.ReactNode })
 
   const navCompact = collapsed && !mobileNavOpen;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     try {
       const saved = localStorage.getItem(HQ_SIDEBAR_KEY);
       if (saved === "1") setCollapsed(true);
@@ -360,7 +360,7 @@ export function HqShell({ children: _children }: { children?: React.ReactNode })
     }
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     mainRef.current?.scrollTo({ top: 0, left: 0 });
   }, [path, search]);
 
@@ -398,7 +398,7 @@ export function HqShell({ children: _children }: { children?: React.ReactNode })
   }
 
   return (
-    <div className="h-dvh min-h-dvh overflow-x-hidden bg-white supports-[height:100dvh]:min-h-[100dvh] supports-[height:100dvh]:h-[100dvh]">
+    <div className="h-full min-h-0 overflow-x-hidden bg-white">
       <div className="mx-auto flex h-full w-full max-w-[1440px] flex-col bg-white">
         <div className="flex shrink-0 flex-col border-b border-[#eef2f6] bg-white lg:flex-row lg:items-stretch">
           <div className="flex min-w-0 items-center gap-2 px-3 py-2.5 sm:gap-1.5 sm:py-3 lg:w-[220px] lg:shrink-0 lg:border-r lg:border-[#eef2f6]">
