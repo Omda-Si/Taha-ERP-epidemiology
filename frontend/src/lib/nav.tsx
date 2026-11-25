@@ -42,22 +42,16 @@ export function NavProvider({ children }: { children: React.ReactNode }) {
   }, [routerSearch]);
 
   useEffect(() => {
-    if (!override) return;
-    if (override.path === pathname && override.search === routerSearch) setOverride(null);
-  }, [override, pathname, routerSearch]);
+    setOverride(null);
+  }, [pathname]);
 
   const push = useCallback((href: string) => {
     const next = parseHref(href);
     const target = `${next.path}${next.search}`;
     if (`${window.location.pathname}${window.location.search}` === target) return;
     window.history.pushState(null, "", target);
-    window.scrollTo(0, 0);
-    if (next.path === pathnameRef.current && next.search === routerSearch) {
-      setOverride(null);
-    } else {
-      setOverride(next);
-    }
-  }, [routerSearch]);
+    setOverride(next);
+  }, []);
 
   const api = useMemo<NavApi>(
     () => ({

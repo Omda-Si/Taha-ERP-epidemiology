@@ -132,12 +132,13 @@ function NavItem({
   );
 }
 
-export function ClinicShell({ children }: { children?: React.ReactNode }) {
+export function ClinicShell({ children: _children }: { children?: React.ReactNode }) {
   const { state } = useClinic();
-  const { path, search, instant, push } = useNav();
-  const body = instant || children == null ? <ClinicScreen path={path} search={search} /> : children;
+  const { path, search, push } = useNav();
+  const body = <ClinicScreen key={`${path}${search}`} path={path} search={search} />;
   const waiting = state.queue.filter((row) => row.status === "pending" || row.status === "failed").length;
   const onBoard = path === "/clinic";
+  const mainRef = useRef<HTMLElement>(null);
 
   const [collapsed, setCollapsed] = useState(false);
 
@@ -149,6 +150,10 @@ export function ClinicShell({ children }: { children?: React.ReactNode }) {
       /* private mode */
     }
   }, []);
+
+  useEffect(() => {
+    mainRef.current?.scrollTo({ top: 0, left: 0 });
+  }, [path, search]);
 
   function toggleSidebar() {
     setCollapsed((value) => {
@@ -222,8 +227,10 @@ export function ClinicShell({ children }: { children?: React.ReactNode }) {
         </aside>
 
         <div className="flex min-h-0 min-w-0 flex-1 flex-col bg-[#f8fafc]">
-          {!onBoard ? (
-            <header className="sticky top-0 z-10 flex shrink-0 flex-wrap items-center gap-3 border-b border-[#f3f4f6] bg-white px-5 py-4 md:px-6">
+          <header className="sticky top-0 z-10 flex shrink-0 flex-wrap items-center gap-3 border-b border-[#f3f4f6] bg-white px-5 py-4 md:px-6">
+            {onBoard ? (
+              <div className="min-h-[42px] min-w-[220px] flex-1" aria-hidden />
+            ) : (
               <form
                 className="flex min-w-[220px] flex-1 items-center gap-3 rounded-full border border-[#e8edf3] bg-[#f8fafc] px-4 py-2.5"
                 onSubmit={(event) => {
@@ -242,43 +249,48 @@ export function ClinicShell({ children }: { children?: React.ReactNode }) {
                   className="min-w-0 flex-1 bg-transparent text-sm text-[#334155] outline-none placeholder:text-[#94a3b8]"
                 />
               </form>
-              <div className="ml-auto flex items-center gap-2">
-                <span
-                  className={cx(
-                    "hidden rounded-full px-2.5 py-1 text-xs font-medium sm:inline",
-                    state.facility.online ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700",
-                  )}
-                >
-                  {state.facility.online ? "Online" : "Offline"}
+            )}
+            <div className="ml-auto flex items-center gap-2">
+              <span
+                className={cx(
+                  "hidden rounded-full px-2.5 py-1 text-xs font-medium sm:inline",
+                  state.facility.online ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700",
+                )}
+              >
+                {state.facility.online ? "Online" : "Offline"}
+              </span>
+              <Link
+                href="/clinic/sync"
+                className="relative grid h-10 w-10 place-items-center rounded-full border border-[#e8edf3] bg-white text-[#64748b]"
+                aria-label="Notifications"
+              >
+                <IconBell />
+                {waiting ? <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-clinic" /> : null}
+              </Link>
+              <Link href="/clinic/settings" className="flex items-center gap-2 rounded-full border border-[#e8edf3] bg-white py-1.5 pl-1.5 pr-3">
+                <span className="grid h-8 w-8 place-items-center rounded-full bg-clinic text-xs font-semibold text-white">RN</span>
+                <span className="text-left text-xs leading-tight">
+                  <span className="block font-semibold text-[#0f172a]">Reception</span>
+                  <span className="text-[#94a3b8]">Taha Clinic</span>
                 </span>
-                <Link
-                  href="/clinic/sync"
-                  className="relative grid h-10 w-10 place-items-center rounded-full border border-[#e8edf3] bg-white text-[#64748b]"
-                  aria-label="Notifications"
-                >
-                  <IconBell />
-                  {waiting ? <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-clinic" /> : null}
-                </Link>
-                <Link href="/clinic/settings" className="flex items-center gap-2 rounded-full border border-[#e8edf3] bg-white py-1.5 pl-1.5 pr-3">
-                  <span className="grid h-8 w-8 place-items-center rounded-full bg-clinic text-xs font-semibold text-white">RN</span>
-                  <span className="text-left text-xs leading-tight">
-                    <span className="block font-semibold text-[#0f172a]">Reception</span>
-                    <span className="text-[#94a3b8]">Taha Clinic</span>
-                  </span>
-                </Link>
-              </div>
-            </header>
-          ) : null}
-          <main className={cx("min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4 md:px-5", onBoard ? "pb-5" : "pb-6")}>{body}</main>
+              </Link>
+            </div>
+          </header>
+          <main
+            ref={mainRef}
+            className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 py-4 pb-5 md:px-5"
+          >
+            {body}
+          </main>
         </div>
       </div>
     </div>
   );
 }
 
-export function HqShell({ children }: { children?: React.ReactNode }) {
-  const { path, search, instant } = useNav();
-  const body = instant || children == null ? <HqScreen path={path} search={search} /> : children;
+export function HqShell({ children: _children }: { children?: React.ReactNode }) {
+  const { path, search } = useNav();
+  const body = <HqScreen key={path} path={path} search={search} />;
   return (
     <div className="min-h-screen md:grid md:grid-cols-[260px_1fr]">
       <aside className="border-b border-line bg-navy text-white md:min-h-screen md:border-r md:border-b-0">
