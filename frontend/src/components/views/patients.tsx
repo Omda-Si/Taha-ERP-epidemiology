@@ -6,9 +6,9 @@ import { ageInYears, toBracket } from "@/lib/anonymize";
 import { useClinic } from "@/lib/clinic-store";
 import { PageHeader, inputClass } from "@/components/ui";
 
-export function PatientsView() {
+export function PatientsView({ initialQuery = "" }: { initialQuery?: string }) {
   const { state } = useClinic();
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialQuery);
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase();
     return [...state.patients]
