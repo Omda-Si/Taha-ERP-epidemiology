@@ -21,25 +21,20 @@ export function HomeView() {
   return (
     <main className="fixed inset-0 flex flex-col overflow-hidden bg-white">
       <div className="flex h-full min-h-0 flex-col">
-        <header className="flex items-center justify-between gap-4 px-5 py-3.5 sm:px-7">
-          <Link href="/" className="shrink-0">
+        <header className="relative flex items-center justify-between gap-4 px-5 py-3.5 sm:px-7">
+          <Link href="/" className="relative z-10 shrink-0">
             <Logo />
           </Link>
-          <nav className="hidden items-center gap-7 text-[13px] font-medium text-[#5c677a] lg:flex">
+          <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-7 text-[13px] font-medium text-[#5c677a] lg:flex">
             {NAV.map((item) => (
               <Link key={item.href} href={item.href} className="hover:text-ink">
                 {item.label}
               </Link>
             ))}
           </nav>
-          <div className="flex items-center gap-4">
-            <Link href="/hq" className="text-[13px] font-medium text-ink lg:hidden">
-              Headquarters
-            </Link>
-            <Link href="/clinic" className="rounded-md bg-clinic px-3.5 py-2 text-[13px] font-semibold text-white hover:bg-clinic-deep">
-              Open clinic
-            </Link>
-          </div>
+          <Link href="/hq" className="text-[13px] font-medium text-ink lg:hidden">
+            Headquarters
+          </Link>
         </header>
 
         <div className="grid min-h-0 flex-1 grid-rows-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:grid-cols-2 lg:grid-rows-1">
