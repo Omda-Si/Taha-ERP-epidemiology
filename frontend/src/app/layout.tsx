@@ -12,11 +12,11 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: {
-    default: "Genial",
-    template: "%s · Genial",
+    default: "Taha Clinic",
+    template: "%s · Taha Clinic",
   },
   description:
-    "Genial Clínica Especializada. Clinic workstation and headquarters epidemiology. Patient identifiers stay inside the facility.",
+    "Taha Clinic Khartoum. The clinic workstation keeps patient identifiers local. Headquarters receives anonymized diagnosis events only.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
