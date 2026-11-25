@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { buildPayload, strippedRows } from "@/lib/anonymize";
@@ -10,10 +10,18 @@ import { khartoumLocalToIso } from "@/lib/format";
 import { Button, Field, PageHeader, inputClass } from "@/components/ui";
 import { PayloadPreview } from "@/components/payload-preview";
 
-export function DiagnoseForm() {
+export function DiagnoseForm({ patient: patientProp }: { patient?: string | null } = {}) {
+  if (patientProp !== undefined) return <DiagnoseFormBody preset={patientProp} />;
+  return <DiagnoseFormFromRoute />;
+}
+
+function DiagnoseFormFromRoute() {
   const params = useSearchParams();
+  return <DiagnoseFormBody preset={params.get("patient")} />;
+}
+
+function DiagnoseFormBody({ preset }: { preset: string | null }) {
   const { state, recordDiagnosis } = useClinic();
-  const preset = params.get("patient");
   const [patientId, setPatientId] = useState(
     state.patients.some((patient) => patient.id === preset) ? preset! : (state.patients[0]?.id ?? ""),
   );

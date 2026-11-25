@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
+import { AppFrame } from "@/components/app-frame";
 import { Providers } from "@/components/providers";
 import "./globals.css";
 
@@ -11,18 +12,20 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: {
-    default: "Genial",
-    template: "%s · Genial",
+    default: "Taha Clinic",
+    template: "%s · Taha Clinic",
   },
   description:
-    "Genial Clínica Especializada. Clinic workstation and headquarters epidemiology. Patient identifiers stay inside the facility.",
+    "Taha Clinic Khartoum. The clinic workstation keeps patient identifiers local. Headquarters receives anonymized diagnosis events only.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${poppins.variable} h-full`}>
       <body className="min-h-full bg-paper font-sans text-ink antialiased">
-        <Providers>{children}</Providers>
+        <Providers>
+          <AppFrame>{children}</AppFrame>
+        </Providers>
       </body>
     </html>
   );

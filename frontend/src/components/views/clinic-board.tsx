@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { DEMO_DAY } from "@/lib/catalog";
 import { useClinic } from "@/lib/clinic-store";
 import { formatFee, formatWhen, khartoumDate } from "@/lib/format";

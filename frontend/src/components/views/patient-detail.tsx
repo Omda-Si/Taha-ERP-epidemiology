@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { useParams } from "next/navigation";
 import { ageInYears, buildPayload, strippedRows, toBracket } from "@/lib/anonymize";
 import { useClinic } from "@/lib/clinic-store";
@@ -8,9 +8,17 @@ import { formatDate, formatFee, formatWhen } from "@/lib/format";
 import { PayloadPreview } from "@/components/payload-preview";
 import { PageHeader, Panel, StatusPill, TextLink } from "@/components/ui";
 
-export function PatientDetail() {
+export function PatientDetail({ id: idProp }: { id?: string }) {
+  if (idProp !== undefined) return <PatientDetailBody id={idProp} />;
+  return <PatientDetailFromRoute />;
+}
+
+function PatientDetailFromRoute() {
   const params = useParams<{ id: string }>();
-  const id = params.id;
+  return <PatientDetailBody id={params.id} />;
+}
+
+function PatientDetailBody({ id }: { id: string }) {
   const { state } = useClinic();
   const patient = state.patients.find((row) => row.id === id);
 

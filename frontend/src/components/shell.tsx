@@ -1,14 +1,15 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link } from "@/components/link";
 import { Logo } from "@/components/logo";
+import { ClinicScreen, HqScreen } from "@/components/screens";
 import { cx } from "@/lib/format";
 import { useClinic } from "@/lib/clinic-store";
+import { useNav } from "@/lib/nav";
 
 function NavLink({ href, label, exact }: { href: string; label: string; exact?: boolean }) {
-  const pathname = usePathname();
-  const active = exact ? pathname === href : pathname === href || pathname.startsWith(`${href}/`);
+  const { path } = useNav();
+  const active = exact ? path === href : path === href || path.startsWith(`${href}/`);
   return (
     <Link
       href={href}
@@ -22,8 +23,10 @@ function NavLink({ href, label, exact }: { href: string; label: string; exact?: 
   );
 }
 
-export function ClinicShell({ children }: { children: React.ReactNode }) {
+export function ClinicShell({ children }: { children?: React.ReactNode }) {
   const { state } = useClinic();
+  const { path, search, instant } = useNav();
+  const body = instant || children == null ? <ClinicScreen path={path} search={search} /> : children;
   const waiting = state.queue.filter((row) => row.status === "pending" || row.status === "failed").length;
 
   return (
@@ -55,13 +58,15 @@ export function ClinicShell({ children }: { children: React.ReactNode }) {
             {!state.facility.syncEnabled ? " · sync disabled" : ""}
           </p>
         </div>
-        <div className="px-5 py-6">{children}</div>
+        <div className="px-5 py-6">{body}</div>
       </div>
     </div>
   );
 }
 
-export function HqShell({ children }: { children: React.ReactNode }) {
+export function HqShell({ children }: { children?: React.ReactNode }) {
+  const { path, search, instant } = useNav();
+  const body = instant || children == null ? <HqScreen path={path} search={search} /> : children;
   return (
     <div className="min-h-screen md:grid md:grid-cols-[260px_1fr]">
       <aside className="border-b border-line bg-navy text-white md:min-h-screen md:border-r md:border-b-0">
@@ -84,15 +89,15 @@ export function HqShell({ children }: { children: React.ReactNode }) {
         <div className="border-b border-line px-5 py-3 text-sm text-muted">
           Anonymized surveillance. Names, phones, national IDs, and street addresses are not in this database.
         </div>
-        <div className="px-5 py-6">{children}</div>
+        <div className="px-5 py-6">{body}</div>
       </div>
     </div>
   );
 }
 
 function HqLink({ href, label, exact }: { href: string; label: string; exact?: boolean }) {
-  const pathname = usePathname();
-  const active = exact ? pathname === href : pathname === href || pathname.startsWith(`${href}/`);
+  const { path } = useNav();
+  const active = exact ? path === href : path === href || path.startsWith(`${href}/`);
   return (
     <Link
       href={href}

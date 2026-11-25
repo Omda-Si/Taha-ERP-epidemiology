@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/components/link";
 import { useState } from "react";
 import { useClinic } from "@/lib/clinic-store";
 import type { AppointmentState } from "@/lib/types";
