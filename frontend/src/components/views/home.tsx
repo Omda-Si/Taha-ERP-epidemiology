@@ -3,12 +3,12 @@
 import { useEffect } from "react";
 import { Link } from "@/components/link";
 import { Logo, Mark } from "@/components/logo";
-import { prefetchHqRoute } from "@/lib/prefetch-route";
+import { prefetchAllDeskPages, prefetchHqRoute } from "@/lib/prefetch-route";
 
 const NAV = [
-  { href: "/clinic/diagnose", label: "Record diagnosis", short: "Diagnose" },
-  { href: "/clinic/sync", label: "Sync queue", short: "Queue" },
-  { href: "/hq/diseases", label: "Disease signals", short: "Signals" },
+  { href: "/desk/diagnose", label: "Record diagnosis", short: "Diagnose" },
+  { href: "/desk/sync", label: "Sync queue", short: "Queue" },
+  { href: "/desk/signals", label: "Disease signals", short: "Signals" },
 ] as const;
 
 const BOARD = [
@@ -19,9 +19,16 @@ const BOARD = [
 
 export function HomeView() {
   useEffect(() => {
-    const idle = window.setTimeout(() => prefetchHqRoute(), 400);
-    return () => window.clearTimeout(idle);
+    prefetchAllDeskPages();
+    const runHq = () => prefetchHqRoute();
+    if (typeof requestIdleCallback !== "undefined") {
+      const id = requestIdleCallback(runHq);
+      return () => cancelIdleCallback(id);
+    }
+    const t = window.setTimeout(runHq, 0);
+    return () => window.clearTimeout(t);
   }, []);
+
 
   return (
     <main className="flex h-full min-h-0 flex-col overflow-hidden bg-white">
