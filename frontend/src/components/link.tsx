@@ -54,6 +54,11 @@ export function Link({
         warm();
         onClick?.();
 
+        if (deskPath(pathname) && deskPath(parseHref(href).path)) {
+          push(href);
+          return;
+        }
+
         if (deskPath(parseHref(href).path)) {
           router.push(href, { scroll: false });
           return;

@@ -6,7 +6,7 @@ import { buildPayload, strippedRows } from "@/lib/anonymize";
 import { ICD } from "@/lib/catalog";
 import { useClinic } from "@/lib/clinic-store";
 import { formatWhen, khartoumLocalToIso } from "@/lib/format";
-import { DeskChrome } from "./desk-chrome";
+import { DeskPageHeader } from "./desk-chrome";
 
 const inputClass =
   "w-full rounded-lg border border-[#e8edf3] bg-white px-3 py-2 text-sm text-[#0f172a] outline-none transition focus:border-clinic focus:ring-2 focus:ring-clinic/15";
@@ -77,13 +77,12 @@ export function DiagnoseDesk({ patient: preset }: { patient?: string | null } = 
   }
 
   return (
-    <DeskChrome
-      active="/desk/diagnose"
+    <DeskPageHeader
       kicker="Facility chart"
       title="Record diagnosis"
       lede="Two writes: the full note stays in the clinic database. Only the ten-field epidemiology contract can leave the building."
       actions={
-        <span className="rounded-lg border border-[#e8edf3] bg-white px-3 py-1.5 text-xs text-[#64748b]">
+        <span className="rounded-md border border-[#e8edf3] bg-white px-2.5 py-1 text-[11px] text-[#64748b]">
           {whitelistCount} whitelist fields on save
         </span>
       }
@@ -210,7 +209,7 @@ export function DiagnoseDesk({ patient: preset }: { patient?: string | null } = 
           </section>
         </div>
       </div>
-    </DeskChrome>
+    </DeskPageHeader>
   );
 }
 

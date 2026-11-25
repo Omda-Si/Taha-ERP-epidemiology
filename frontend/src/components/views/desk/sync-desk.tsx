@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useClinic } from "@/lib/clinic-store";
 import type { SyncStatus } from "@/lib/types";
 import { cx, formatWhen } from "@/lib/format";
-import { DeskChrome } from "./desk-chrome";
+import { DeskPageHeader } from "./desk-chrome";
 import { Button, StatusPill } from "@/components/ui";
 
 const STATUS_HELP: Record<SyncStatus, string> = {
@@ -36,13 +36,12 @@ export function SyncDesk() {
   );
 
   return (
-    <DeskChrome
-      active="/desk/sync"
+    <DeskPageHeader
       kicker="Outbound worker"
       title="Sync queue"
       lede="Durable store for anonymized payloads. The clinic chart is already saved — this page only tracks what still needs to reach Taha headquarters."
       actions={
-        <Button onClick={flushQueue} disabled={!actionable}>
+        <Button onClick={flushQueue} disabled={!actionable} className="px-2.5 py-1.5 text-xs">
           {state.facility.online ? "Flush queue" : "Flush (offline)"}
         </Button>
       }
@@ -156,6 +155,6 @@ export function SyncDesk() {
           </section>
         </aside>
       </div>
-    </DeskChrome>
+    </DeskPageHeader>
   );
 }
