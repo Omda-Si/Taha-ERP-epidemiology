@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72">
+  <rect width="72" height="72" rx="16" fill="#ffffff"/>
+  <defs>
+    <mask id="genial-icon">
+      <rect x="8" y="8" width="56" height="56" rx="18" fill="white"/>
+      <rect x="33" y="8" width="6" height="56" rx="3" fill="black"/>
+      <rect x="8" y="33" width="56" height="6" rx="3" fill="black"/>
+    </mask>
+  </defs>
+  <g mask="url(#genial-icon)">
+    <rect x="8" y="8" width="28" height="28" fill="#0056ff"/>
+    <rect x="36" y="8" width="28" height="28" fill="#00dee3"/>
+    <rect x="8" y="36" width="28" height="28" fill="#1f3892"/>
+    <rect x="36" y="36" width="28" height="28" fill="#5db4ff"/>
+  </g>
+</svg>
