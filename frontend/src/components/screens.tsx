@@ -8,12 +8,6 @@ import { PatientForm } from "@/components/views/patient-form";
 import { PatientsView } from "@/components/views/patients";
 import { SettingsView } from "@/components/views/settings";
 import { SyncQueue } from "@/components/views/sync-queue";
-import { HqDemographics } from "@/components/views/hq-demographics";
-import { HqDiseases } from "@/components/views/hq-diseases";
-import { HqEvents } from "@/components/views/hq-events";
-import { HqFacilities } from "@/components/views/hq-facilities";
-import { HqGeography } from "@/components/views/hq-geography";
-import { HqOverview } from "@/components/views/hq-overview";
 
 function queryValue(search: string, key: string) {
   const raw = search.startsWith("?") ? search.slice(1) : search;
@@ -35,12 +29,4 @@ export function ClinicScreen({ path, search }: { path: string; search: string })
   return null;
 }
 
-export function HqScreen({ path, search }: { path: string; search: string }) {
-  if (path === "/hq") return <HqOverview />;
-  if (path === "/hq/diseases") return <HqDiseases key={search || "all"} code={queryValue(search, "code")} />;
-  if (path === "/hq/geography") return <HqGeography />;
-  if (path === "/hq/demographics") return <HqDemographics />;
-  if (path === "/hq/facilities") return <HqFacilities />;
-  if (path === "/hq/events") return <HqEvents />;
-  return null;
-}
+export { HqScreen } from "@/components/hq-screens";

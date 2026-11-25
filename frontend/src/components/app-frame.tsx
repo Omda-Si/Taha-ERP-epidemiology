@@ -1,9 +1,15 @@
 "use client";
 
-import { ClinicShell, HqShell } from "@/components/shell";
+import dynamic from "next/dynamic";
+import { ClinicShell } from "@/components/shell";
+import { HqShellFallback } from "@/components/hq-shell-fallback";
 import { HomeView } from "@/components/views/home";
 import { useNav } from "@/lib/nav";
 import { usePathname } from "next/navigation";
+
+const HqShell = dynamic(() => import("@/components/hq-shell").then((m) => m.HqShell), {
+  loading: () => <HqShellFallback />,
+});
 
 export function AppFrame({ children }: { children: React.ReactNode }) {
   const { path, instant } = useNav();

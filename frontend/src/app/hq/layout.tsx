@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { HqShell } from "@/components/shell";
+import { HqShell } from "@/components/hq-shell";
 
 export const metadata: Metadata = { title: "Surveillance desk" };
 
