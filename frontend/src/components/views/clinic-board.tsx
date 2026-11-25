@@ -113,7 +113,7 @@ export function ClinicBoard() {
           <p className="mt-0.5 text-xs text-[#64748b]">Real-time appointment management and clinic utilisation metrics</p>
         </div>
         <div className="flex w-full flex-col gap-1.5 sm:flex-row sm:flex-wrap sm:items-center lg:w-auto lg:justify-end">
-          <label className="flex min-w-[180px] flex-1 items-center gap-2 rounded-lg border border-[#e8edf3] bg-white px-2.5 py-1.5 sm:max-w-[190px] sm:flex-none">
+          <label className="hidden min-w-[180px] flex-1 items-center gap-2 rounded-lg border border-[#e8edf3] bg-white px-2.5 py-1.5 md:flex md:max-w-[190px] md:flex-none">
             <span className="text-[#94a3b8]" aria-hidden="true">
               <SearchIcon />
             </span>
@@ -133,7 +133,7 @@ export function ClinicBoard() {
             </select>
             <Link
               href="/clinic/sync"
-              className="rounded-lg bg-clinic px-3 py-1.5 text-xs font-semibold text-white shadow-[0_4px_14px_rgba(0,86,255,0.28)] hover:bg-clinic-deep"
+              className="w-full rounded-lg bg-clinic px-3 py-1.5 text-center text-xs font-semibold text-white shadow-[0_4px_14px_rgba(0,86,255,0.28)] hover:bg-clinic-deep sm:w-auto"
             >
               Export Clinic Report
             </Link>
@@ -169,7 +169,7 @@ export function ClinicBoard() {
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-3 xl:grid-cols-[1fr_min(100%,17.5rem)]">
+      <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_min(100%,17.5rem)]">
         <section className="rounded-xl border border-[#e8edf3] bg-white p-3 shadow-sm">
           <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <h2 className="text-sm font-semibold text-[#0f172a]">Today&apos;s Appointments</h2>

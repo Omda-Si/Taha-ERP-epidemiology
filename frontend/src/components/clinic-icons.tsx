@@ -111,6 +111,14 @@ export function IconPin() {
   );
 }
 
+export function IconMenu() {
+  return (
+    <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none" aria-hidden="true">
+      <path d="M4 6h12M4 10h12M4 14h12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 /** Sidebar expand / collapse control */
 export function IconSidebarToggle({ collapsed }: { collapsed?: boolean }) {
   return (
