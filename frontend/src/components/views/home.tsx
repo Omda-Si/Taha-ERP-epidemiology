@@ -1,7 +1,9 @@
 "use client";
 
+import { useEffect } from "react";
 import { Link } from "@/components/link";
 import { Logo, Mark } from "@/components/logo";
+import { prefetchHqRoute } from "@/lib/prefetch-route";
 
 const NAV = [
   { href: "/clinic/diagnose", label: "Record diagnosis", short: "Diagnose" },
@@ -16,6 +18,11 @@ const BOARD = [
 ];
 
 export function HomeView() {
+  useEffect(() => {
+    const idle = window.setTimeout(() => prefetchHqRoute(), 400);
+    return () => window.clearTimeout(idle);
+  }, []);
+
   return (
     <main className="flex h-full min-h-0 flex-col overflow-hidden bg-white">
       <div className="mx-auto flex h-full min-h-0 w-full max-w-[1440px] flex-col">
