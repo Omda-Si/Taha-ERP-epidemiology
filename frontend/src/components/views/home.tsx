@@ -6,10 +6,16 @@ import { Logo, Mark } from "@/components/logo";
 const NAV = [
   { href: "/clinic", label: "Clinic" },
   { href: "/hq", label: "Surveillance desk" },
+  { href: "/clinic/diagnose", label: "Record diagnosis" },
+  { href: "/clinic/sync", label: "Sync queue" },
+  { href: "/hq/diseases", label: "Disease signals" },
+] as const;
+
+const MOBILE_QUICK = [
+  { href: "/clinic", label: "Clinic" },
+  { href: "/hq", label: "Desk" },
   { href: "/clinic/sync", label: "Queue" },
-  { href: "/hq/events", label: "Ledger" },
-  { href: "/hq/facilities", label: "Facilities" },
-];
+] as const;
 
 const BOARD = [
   { id: "apt_ibrahim_today", name: "Ibrahim Osman", doctor: "Dr. Hassan Idris", reason: "Vomiting", when: "08:00", state: "Completed" },
@@ -25,16 +31,28 @@ export function HomeView() {
           <Link href="/" className="relative z-10 shrink-0">
             <Logo />
           </Link>
-          <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-7 text-[13px] font-medium text-[#5c677a] lg:flex">
+          <nav
+            className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-6 text-[13px] font-medium text-[#64748b] lg:flex"
+            aria-label="Quick links"
+          >
             {NAV.map((item) => (
-              <Link key={item.href} href={item.href} className="hover:text-ink">
+              <Link
+                key={item.href}
+                href={item.href}
+                className="whitespace-nowrap transition hover:text-clinic"
+                title={item.label}
+              >
                 {item.label}
               </Link>
             ))}
           </nav>
-          <Link href="/hq" className="text-[13px] font-medium text-ink lg:hidden">
-            Headquarters
-          </Link>
+          <nav className="flex items-center gap-3 text-[13px] font-medium text-[#64748b] lg:hidden" aria-label="Quick links">
+            {MOBILE_QUICK.map((item) => (
+              <Link key={item.href} href={item.href} className="transition hover:text-clinic">
+                {item.label}
+              </Link>
+            ))}
+          </nav>
         </header>
 
         <div className="grid min-h-0 flex-1 grid-rows-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:grid-cols-2 lg:grid-rows-1">
