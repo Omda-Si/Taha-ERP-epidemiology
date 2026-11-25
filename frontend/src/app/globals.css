@@ -17,10 +17,14 @@
 }
 
 html {
+  height: 100%;
+  overflow: hidden;
   background: var(--color-paper);
 }
 
 body {
+  height: 100%;
+  overflow: hidden;
   background: var(--color-paper);
   color: var(--color-ink);
 }
@@ -33,4 +37,13 @@ input,
 select,
 textarea {
   accent-color: var(--color-clinic);
+}
+
+@utility scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }

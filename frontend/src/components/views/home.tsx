@@ -4,12 +4,10 @@ import { Link } from "@/components/link";
 import { Logo, Mark } from "@/components/logo";
 
 const NAV = [
-  { href: "/clinic/diagnose", label: "Record diagnosis" },
-  { href: "/clinic/sync", label: "Sync queue" },
-  { href: "/hq/diseases", label: "Disease signals" },
+  { href: "/clinic/diagnose", label: "Record diagnosis", short: "Diagnose" },
+  { href: "/clinic/sync", label: "Sync queue", short: "Queue" },
+  { href: "/hq/diseases", label: "Disease signals", short: "Signals" },
 ] as const;
-
-const MOBILE_QUICK = NAV;
 
 const BOARD = [
   { id: "apt_ibrahim_today", name: "Ibrahim Osman", doctor: "Dr. Hassan Idris", reason: "Vomiting", when: "08:00", state: "Completed" },
@@ -20,69 +18,64 @@ const BOARD = [
 export function HomeView() {
   return (
     <main className="flex h-full min-h-0 flex-col overflow-hidden bg-white">
-      <div className="flex h-full min-h-0 flex-col">
-        <header className="relative flex items-center justify-between gap-4 px-5 py-3.5 sm:px-7">
-          <Link href="/" className="relative z-10 shrink-0">
+      <div className="mx-auto flex h-full min-h-0 w-full max-w-[1440px] flex-col">
+        <header className="shrink-0 px-4 pt-3 pb-2 sm:relative sm:flex sm:h-[3.75rem] sm:items-center sm:px-6 sm:pb-0 sm:pt-0 lg:px-8">
+          <Link href="/" className="relative z-10 shrink-0" title="Home" aria-label="Taha Clinic home">
             <Logo />
           </Link>
           <nav
-            className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-6 text-[13px] font-medium text-[#64748b] lg:flex"
+            className="pointer-events-none mt-3 flex items-center justify-center gap-4 text-[12px] font-medium text-[#64748b] sm:absolute sm:inset-y-0 sm:left-6 sm:right-6 sm:mt-0 sm:gap-6 sm:text-[13px] lg:left-8 lg:right-8"
             aria-label="Quick links"
           >
             {NAV.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="whitespace-nowrap transition hover:text-clinic"
+                className="pointer-events-auto whitespace-nowrap transition hover:text-clinic"
                 title={item.label}
               >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-          <nav className="flex items-center gap-3 text-[13px] font-medium text-[#64748b] lg:hidden" aria-label="Quick links">
-            {MOBILE_QUICK.map((item) => (
-              <Link key={item.href} href={item.href} className="transition hover:text-clinic">
-                {item.label}
+                <span className="md:hidden">{item.short}</span>
+                <span className="hidden md:inline">{item.label}</span>
               </Link>
             ))}
           </nav>
         </header>
 
-        <div className="grid min-h-0 flex-1 grid-rows-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:grid-cols-2 lg:grid-rows-1">
-          <section className="flex min-h-0 flex-col justify-center overflow-hidden px-6 py-6 sm:px-10 lg:px-14">
-            <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-clinic">
-              <span className="h-1.5 w-1.5 rounded-full bg-clinic" />
-              Epidemiological data sync
-            </p>
-            <h1 className="mt-5 text-[2.55rem] font-bold leading-[0.98] tracking-[-0.035em] text-[#12141c] sm:text-[3.25rem]">
-              <span className="block">Disease signal</span>
-              <span className="block">for headquarters.</span>
-              <span className="block">Names stay local.</span>
-            </h1>
-            <p className="mt-6 max-w-md text-[15px] leading-7 text-[#5c677a]">
-              The workstation keeps the chart when the link is down. A saved diagnosis queues ten anonymized fields.
-              Headquarters watches disease and region, and never receives a name, phone, national ID, or street.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Link
-                href="/clinic"
-                className="inline-flex items-center gap-2 rounded-md bg-clinic px-4 py-2.5 text-sm font-semibold text-white hover:bg-clinic-deep"
-              >
-                Open the clinic
-                <span aria-hidden="true">→</span>
-              </Link>
-              <Link
-                href="/hq"
-                className="inline-flex items-center rounded-md border border-[#d9dee7] bg-white px-4 py-2.5 text-sm font-semibold text-ink hover:bg-[#f6f8fb]"
-              >
-                Surveillance desk
-              </Link>
+        <div className="grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)_minmax(11rem,0.42fr)] overflow-hidden lg:grid-cols-2 lg:grid-rows-1">
+          <section className="flex min-h-0 flex-col justify-center overflow-hidden px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
+            <div className="w-full max-w-xl">
+              <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-clinic">
+                <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-clinic" />
+                Epidemiological data sync
+              </p>
+              <h1 className="mt-4 text-[clamp(1.75rem,4.2vw+1rem,3rem)] font-bold leading-[1.12] tracking-[-0.03em] text-[#0f172a]">
+                Disease signal for headquarters.
+                <span className="mt-1 block text-[#1e293b]">Names stay local.</span>
+              </h1>
+              <p className="mt-5 max-w-[30rem] text-[15px] leading-7 text-[#64748b]">
+                The workstation keeps the chart when the link is down. A saved diagnosis queues ten anonymized fields.
+                Headquarters watches disease and region, and never receives a name, phone, national ID, or street.
+              </p>
+              <div className="mt-7 flex w-full max-w-[30rem] flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:items-center">
+                <Link
+                  href="/clinic"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-clinic px-4 py-2.5 text-sm font-semibold text-white shadow-[0_4px_14px_rgba(0,86,255,0.28)] hover:bg-clinic-deep sm:w-auto"
+                >
+                  Open the clinic
+                  <span aria-hidden="true">→</span>
+                </Link>
+                <Link
+                  href="/hq"
+                  className="inline-flex w-full items-center justify-center rounded-lg border border-[#e8edf3] bg-white px-4 py-2.5 text-sm font-semibold text-[#0f172a] hover:bg-[#f8fafc] sm:w-auto"
+                >
+                  Surveillance desk
+                </Link>
+              </div>
+              <p className="mt-7 flex max-w-[30rem] items-start gap-2 text-xs leading-5 text-[#94a3b8]">
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#c5ccd6]" />
+                Taha Clinic Khartoum. Identifiers stay inside the facility.
+              </p>
             </div>
-            <p className="mt-8 flex items-center gap-2 text-xs text-[#7b8494]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#c5ccd6]" />
-              Taha Clinic Khartoum. Identifiers stay inside the facility.
-            </p>
           </section>
 
           <section className="relative min-h-0 overflow-hidden bg-[linear-gradient(185deg,#07122e_0%,#123a86_34%,#0b6ec8_62%,#14d0dc_100%)]">
