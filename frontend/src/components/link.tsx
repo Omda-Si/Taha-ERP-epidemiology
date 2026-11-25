@@ -8,12 +8,14 @@ export function Link({
   children,
   title,
   "aria-label": ariaLabel,
+  onClick,
 }: {
   href: string;
   className?: string;
   children: React.ReactNode;
   title?: string;
   "aria-label"?: string;
+  onClick?: () => void;
 }) {
   const { push } = useNav();
   return (
@@ -27,6 +29,7 @@ export function Link({
         if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
         if (!href.startsWith("/")) return;
         event.preventDefault();
+        onClick?.();
         push(href);
       }}
     >

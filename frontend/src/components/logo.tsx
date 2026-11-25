@@ -27,18 +27,28 @@ export function Mark({ className }: { className?: string }) {
 export function Logo({
   tone = "onLight",
   className,
+  compact,
 }: {
   tone?: "onLight" | "onNavy";
   className?: string;
+  compact?: boolean;
 }) {
   return (
-    <span className={cx("inline-flex items-center gap-2.5", className)}>
-      <Mark className="h-9 w-9 shrink-0" />
+    <span className={cx("inline-flex min-w-0 items-center gap-2 sm:gap-2.5", className)}>
+      <Mark className={cx("shrink-0", compact ? "h-8 w-8" : "h-9 w-9")} />
       <span className="min-w-0 leading-none">
-        <span className={cx("block text-[1.15rem] font-bold tracking-tight", tone === "onNavy" ? "text-white" : "text-clinic")}>
+        <span
+          className={cx(
+            "block font-bold tracking-tight",
+            compact ? "text-[1rem]" : "text-[1.15rem]",
+            tone === "onNavy" ? "text-white" : "text-clinic",
+          )}
+        >
           Taha Clinic
         </span>
-        <span className="mt-0.5 block text-[0.68rem] font-semibold text-sky">Khartoum</span>
+        <span className={cx("mt-0.5 font-semibold text-sky", compact ? "hidden text-[0.62rem] sm:block" : "block text-[0.68rem]")}>
+          Khartoum
+        </span>
       </span>
     </span>
   );

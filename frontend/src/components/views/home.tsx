@@ -5,7 +5,7 @@ import { Logo, Mark } from "@/components/logo";
 
 const NAV = [
   { href: "/clinic", label: "Clinic" },
-  { href: "/hq", label: "Headquarters" },
+  { href: "/hq", label: "Surveillance desk" },
   { href: "/clinic/sync", label: "Queue" },
   { href: "/hq/events", label: "Ledger" },
   { href: "/hq/facilities", label: "Facilities" },
