@@ -6,7 +6,7 @@ import { AreaChart, BarList } from "@/components/charts";
 import { ICD } from "@/lib/catalog";
 import { countBy, outbreaks, ratioLabel, weeklySeries } from "@/lib/stats";
 import { useCentralEvents } from "@/lib/use-central-events";
-import { DeskChrome } from "./desk-chrome";
+import { DeskPageHeader } from "./desk-chrome";
 
 export function SignalsDesk({ code: initial }: { code?: string | null } = {}) {
   const events = useCentralEvents();
@@ -21,8 +21,7 @@ export function SignalsDesk({ code: initial }: { code?: string | null } = {}) {
   const ageBands = useMemo(() => countBy(subset, (e) => e.age_bracket).slice(0, 8), [subset]);
 
   return (
-    <DeskChrome
-      active="/desk/signals"
+    <DeskPageHeader
       kicker="Headquarters view"
       title="Disease signals"
       lede="Anonymized events only — compare ICD codes, outbreak flags, and who is affected by age and occupation. No patient names in this feed."
@@ -30,7 +29,7 @@ export function SignalsDesk({ code: initial }: { code?: string | null } = {}) {
         <select
           value={code}
           onChange={(e) => setCode(e.target.value)}
-          className="max-w-[14rem] rounded-lg border border-[#e8edf3] bg-white px-3 py-2 text-sm text-[#0f172a] outline-none focus:border-clinic"
+          className="max-w-[14rem] rounded-md border border-[#e8edf3] bg-white px-2.5 py-1.5 text-xs text-[#0f172a] outline-none focus:border-clinic"
         >
           {ICD.map((row) => (
             <option key={row.code} value={row.code}>
@@ -85,7 +84,7 @@ export function SignalsDesk({ code: initial }: { code?: string | null } = {}) {
           </div>
         </div>
       </ImageSection>
-    </DeskChrome>
+    </DeskPageHeader>
   );
 }
 

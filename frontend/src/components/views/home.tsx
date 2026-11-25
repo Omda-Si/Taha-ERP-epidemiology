@@ -42,7 +42,7 @@ export function HomeView() {
             <Logo />
           </Link>
           <nav
-            className="pointer-events-none mt-3 flex items-center justify-center gap-4 text-[12px] font-medium text-[#64748b] sm:absolute sm:inset-y-0 sm:left-6 sm:right-6 sm:mt-0 sm:gap-6 sm:text-[13px] lg:left-8 lg:right-8"
+            className="pointer-events-none mt-3 flex items-center justify-center gap-3 text-[11px] font-medium text-[#64748b] sm:absolute sm:inset-y-0 sm:left-6 sm:right-6 sm:mt-0 sm:gap-5 sm:text-xs lg:left-8 lg:right-8"
             aria-label="Quick links"
           >
             {NAV.map((item) => (
